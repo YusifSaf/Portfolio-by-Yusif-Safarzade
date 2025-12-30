@@ -1,0 +1,130 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background: #f5f5f5;
+}
+
+body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+.title {
+    position: relative;
+    text-align: center;
+    padding: 3rem 1rem 4rem;
+    max-width: 1450px;
+    margin: 0 auto;
+}
+
+.title-header {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    text-transform: capitalize;
+}
+
+.back-button {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: opacity 0.2s;
+}
+
+.back-button:hover {
+    opacity: 0.6;
+}
+
+.back-button img {
+    width: 40px;
+    height: 40px;
+    display: block;
+}
+
+/* In case you want to have just 1 column. Change repeat(1, 1fr), max-width: 960, max-height: 540 */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+    max-width: 1440px;
+    max-height: 810px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.grid-item {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.grid-item:hover {
+    transform: scale(1.02);
+}
+
+.grid-item img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.3s;
+}
+
+.grid-item:hover img {
+    opacity: 0.3;
+}
+
+.overlay-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    padding: 20px;
+}
+
+.grid-item:hover .overlay-text {
+    opacity: 1;
+}
+
+/* For mobile devices */
+@media (max-width: 768px) {
+    .grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    }
+
+    .title {
+    padding: 2rem 1rem 3rem;
+    }
+
+    .back-button {
+    left: 10px;
+    }
+
+    .back-button img {
+    width: 30px;
+    height: 30px;
+    }
+}

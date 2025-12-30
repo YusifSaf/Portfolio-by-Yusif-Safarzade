@@ -1,0 +1,123 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background: #f5f5f5;
+    min-height: 100vh;
+}
+
+body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+.title {
+    position: relative;
+    text-align: center;
+    padding: 3rem 1rem 4rem;
+    max-width: 1450px;
+    margin: 0 auto;
+}
+
+.title-header {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    text-transform: capitalize;
+}
+
+.back-button {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: opacity 0.2s;
+}
+
+.back-button:hover {
+    opacity: 0.6;
+}
+
+.back-button img {
+    width: 40px;
+    height: 40px;
+    display: block;
+}
+
+.content {
+    max-width: 1450px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.contact-block {
+    background: #fff;
+    padding: 60px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    line-height: 1.8;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.contact-item {
+    margin-bottom: 2rem;
+}
+
+.contact-item:last-child {
+    margin-bottom: 0;
+}
+
+.contact-label {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.contact-info {
+    font-size: 1.1rem;
+    color: #666;
+}
+
+.contact-info a {
+    color: #333;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.contact-info a:hover {
+    opacity: 0.6;
+}
+
+/* For mobile devices */
+@media (max-width: 768px) {
+    .title {
+    padding: 2rem 1rem 3rem;
+    }
+
+    .back-button {
+    left: 10px;
+    }
+
+    .back-button img {
+    width: 30px;
+    height: 30px;
+    }
+
+    .contact-block {
+    padding: 40px 30px;
+    font-size: 1rem;
+    }
+
+    .contact-label {
+    font-size: 1.1rem;
+    }
+
+    .contact-info {
+    font-size: 1rem;
+    }
+}

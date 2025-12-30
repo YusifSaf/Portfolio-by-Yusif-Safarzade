@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      overflow-x: hidden;
+    }
+
+    body::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+
+    .hero-image {
+      width: 100%;
+      height: 100vh;
+      margin-top: 1rem;
+      object-fit: cover;
+      display: block;
+    }
+
+    .content-wrapper {
+      padding: 20px;
+    }
+
+    .title {
+      position: relative;
+      text-align: center;
+      padding: 3rem 1rem 4rem;
+      max-width: 1450px;
+      margin: 0 auto;
+    }
+
+    .title-header {
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      text-transform: capitalize;
+    }
+
+    .back-button {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2rem;
+      color: #333;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .back-button:hover {
+      opacity: 0.6;
+    }
+
+    .content {
+      max-width: 1450px;
+      margin: 0 auto;
+      padding: 0 120px 40px;
+    }
+
+    .text-block {
+      background: none;
+      line-height: 1.8;
+      font-size: 1.1rem;
+      color: #333;
+    }
+
+    .text-block p {
+      margin-bottom: 1.5rem;
+    }
+
+    .text-block p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* For mobile devices */
+    @media (max-width: 768px) {
+      .hero-image {
+        height: 40vh;
+      }
+
+      .title {
+        padding: 2rem 1rem 3rem;
+      }
+
+      .back-button {
+        left: 10px;
+        font-size: 1.5rem;
+      }
+
+      .content {
+        padding: 0 20px 40px;
+      }
+
+      .text-block {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <img src="/images/highResBG.png" alt="Hero" class="hero-image">
+  
+  <div class="content-wrapper">
+    <div class="title">
+      <a href="javascript:history.back()" class="back-button">←</a>
+      <h1 class="title-header">About</h1>
+    </div>
+    
+    <div class="content">
+      <div class="text-block">
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        </p>
+        <p>
+          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.
+        </p>
+        <p>
+          Totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
