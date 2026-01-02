@@ -255,16 +255,16 @@ function OnMouseDown(event){
           //Open link
           break
         case 1:
-          window.open('/HTML/portfolio.html', '_self')
+          window.open('HTML/portfolio.html', '_self')
           break
         case 2:
           //Open link
           break
         case 3:
-          window.open('/HTML/about.html', '_self')
+          window.open('HTML/about.html', '_self')
           break
         case 4:
-          window.open('/HTML/contacts.html', '_self')
+          window.open('HTML/contacts.html', '_self')
           break
         default:
           console.log("No such object found :/");
@@ -282,6 +282,10 @@ const lenis = new Lenis({
   wheelMultiplier: 0.1 // adjust the speed/sensitivity of the scroll
 });
 gsap.ticker.lagSmoothing(0);
+
+window.addEventListener('load', ()=> {
+  lenis.scrollTo(0, { immediate: true });
+})
 
 lenis.on("scroll", (e) => {
   currentScroll = e.scroll;
