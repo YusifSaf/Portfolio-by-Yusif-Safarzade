@@ -3,6 +3,7 @@
 // * means not sure, or possible cause of problems
 
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
+import { gsap } from '//cdn.skypack.dev/gsap?min'
 
 // Variables
 let snap = 0;
@@ -15,8 +16,31 @@ const title = document.getElementById("title");
 let titleText = "";
 let hoverWasSet = false;
 const yPositionOnHover = 60;
-const scaleOnHover = 1.2;
+const scaleOnHover = 1.3;
+let previousBox = null;
+let titleAnimationFired = false; //State variable for firing title fade animation just once
+let currentlyHovering = false;
 
+//Audio References
+let audioPlayed = false;
+// const hoverAudio = document.querySelector('.hover-audio');
+// const BGAudio = document.querySelector('.bg-audio');
+
+// Initialize Lenis and adjust gsap
+const lenis = new Lenis({
+  autoRaf: true,
+  lerp: 0.05, // adjust the smoothness of the scroll
+  wheelMultiplier: 0.1 // adjust the speed/sensitivity of the scroll
+});
+gsap.ticker.lagSmoothing(0);
+
+window.addEventListener('load', ()=> {
+  lenis.scrollTo(0, { immediate: true });
+})
+
+lenis.on("scroll", (e) => {
+  currentScroll = e.scroll;
+})
 
 const scene = new THREE.Scene();
 
@@ -149,6 +173,13 @@ function render() {
   resetBoxHover();
   title.textContent = titleText //Setting the HTML text
   
+  // console.log(Math.round(THREE.MathUtils.radToDeg(boxes[0].rotation.x)));
+  console.log(currentlyHovering);
+  if(currentlyHovering){
+    lenis.stop();
+  }
+  else{ lenis.start(); }
+
   renderer.render(scene, camera);
   requestAnimationFrame(render);
 }
@@ -181,42 +212,93 @@ function OnMouseMove(event){
   const intersections = raycaster.intersectObjects(scene.children, true);
   
   if (intersections.length > 0){
+    
     hoverWasSet = true;
-    const selectedObjectName = intersections[0].object.name;
+    const selectedObjectIndex = intersections[0].object.name;
+    //Reset when switching to another box
+    if(previousBox !== null && previousBox !== selectedObjectIndex){
+      gsap.to(boxes[previousBox].scale, { duration:0.5, ease:"power4.out", x: 1, y: 1, z: 1});
+      gsap.to(boxes[previousBox].rotation, { duration:0.5, ease:"power4.out", x: 0, y: 0, z: 0});
+    }
 
+    previousBox = selectedObjectIndex;
+
+    //When select is available
     if(boxesReady){
       // console.log(`Hovered on ${intersections[0].object.name}`);
+      currentlyHovering = true;
+      if(!audioPlayed){
+        // hoverAudio.play();
+        audioPlayed = true;
+      }
       let currentBox;
-      switch (selectedObjectName){
+      switch (selectedObjectIndex){
         case 0:
           titleText = "Home.";
+          if(!titleAnimationFired){
+            gsap.fromTo('.heading', {opacity:0}, {duration:0.5, ease:"power4.out", opacity: 1})
+          }
+          titleAnimationFired = true;
+
           currentBox = boxes[0]
           // currentBox.position.y = yPositionOnHover;
-          currentBox.scale.set(scaleOnHover, scaleOnHover, scaleOnHover);
+          // gsap.to(currentBox.position, { duration:1, ease:"power4.out", y: yPositionOnHover});
+          // currentBox.scale.set(scaleOnHover, scaleOnHover, scaleOnHover);
+          gsap.to(currentBox.scale, { duration:0.5, ease: "power4.out", x: scaleOnHover, y: scaleOnHover, z: scaleOnHover});
+          gsap.to(currentBox.rotation, { duration:0.5, ease: "power4.out", x: THREE.MathUtils.degToRad(12), y: THREE.MathUtils.degToRad(10), z: THREE.MathUtils.degToRad(-8)});
           break
         case 1:
           titleText = "Portfolio.";
+          if(!titleAnimationFired){
+            gsap.fromTo('.heading', {opacity:0}, {duration:0.5, ease:"power4.out", opacity: 1})
+          }
+          titleAnimationFired = true;
+
           currentBox = boxes[1]
           // currentBox.position.x = yPositionOnHover;
-          currentBox.scale.set(scaleOnHover, scaleOnHover, scaleOnHover);
+          // currentBox.scale.set(scaleOnHover, scaleOnHover, scaleOnHover);
+          gsap.to(currentBox.scale, { duration:0.5, ease: "power4.out", x: scaleOnHover, y: scaleOnHover, z: scaleOnHover});
+          gsap.to(currentBox.rotation, { duration:0.5, ease: "power4.out", x: THREE.MathUtils.degToRad(0), y: THREE.MathUtils.degToRad(45), z: THREE.MathUtils.degToRad(18)});
+          // currentBox.rotation.set(THREE.MathUtils.degToRad(45), THREE.MathUtils.degToRad(45), THREE.MathUtils.degToRad(45));
           break
         case 2:
           titleText = "Resume.";
+          if(!titleAnimationFired){
+            gsap.fromTo('.heading', {opacity:0}, {duration:0.5, ease:"power4.out", opacity: 1})
+          }
+          titleAnimationFired = true;
+
           currentBox = boxes[2]
           // currentBox.position.y = yPositionOnHover;
-          currentBox.scale.set(scaleOnHover, scaleOnHover, scaleOnHover);
+          // currentBox.scale.set(scaleOnHover, scaleOnHover, scaleOnHover);
+          gsap.to(currentBox.scale, { duration:0.5, ease: "power4.out", x: scaleOnHover, y: scaleOnHover, z: scaleOnHover});
+          gsap.to(currentBox.rotation, { duration:0.5, ease: "power4.out", x: THREE.MathUtils.degToRad(25), y: THREE.MathUtils.degToRad(10), z: THREE.MathUtils.degToRad(-9)});
           break
         case 3:
           titleText = "About.";
+          if(!titleAnimationFired){
+            gsap.fromTo('.heading', {opacity:0}, {duration:0.5, ease:"power4.out", opacity: 1})
+          }
+          titleAnimationFired = true;
+
           currentBox = boxes[3]
           // currentBox.position.y = yPositionOnHover;
-          currentBox.scale.set(scaleOnHover, scaleOnHover, scaleOnHover);
+          // currentBox.scale.set(scaleOnHover, scaleOnHover, scaleOnHover);
+          gsap.to(currentBox.scale, { duration:0.5, ease: "power4.out", x: scaleOnHover, y: scaleOnHover, z: scaleOnHover});
+          gsap.to(currentBox.rotation, { duration:0.5, ease: "power4.out", x: THREE.MathUtils.degToRad(-18), y: THREE.MathUtils.degToRad(10), z: THREE.MathUtils.degToRad(11)});
           break
         case 4:
           titleText = "Contacts.";
+          if(!titleAnimationFired){
+            gsap.fromTo('.heading', {opacity:0}, {duration:0.5, ease:"power4.out", opacity: 1})
+          }
+          titleAnimationFired = true;
+
           currentBox = boxes[4]
           // currentBox.position.y = yPositionOnHover;
-          currentBox.scale.set(scaleOnHover, scaleOnHover, scaleOnHover);
+          // currentBox.scale.set(scaleOnHover, scaleOnHover, scaleOnHover);
+          gsap.to(currentBox.scale, { duration:0.5, ease: "power4.out", x: scaleOnHover, y: scaleOnHover, z: scaleOnHover});
+          gsap.to(currentBox.rotation, { duration:0.5, ease: "power4.out", x: THREE.MathUtils.degToRad(14), y: THREE.MathUtils.degToRad(-24), z: THREE.MathUtils.degToRad(-3)});
           break
         default:
           console.log("No such object found :/");
@@ -225,11 +307,25 @@ function OnMouseMove(event){
     }
   }
   if(intersections.length == 0){
+    currentlyHovering = false;
+    if (audioPlayed){
+      // hoverAudio.pause();
+      audioPlayed = false;
+    }
     //Restore default box position and scale when not hovering over any.
     for (let i = 0; i<boxes.length; i++){
-      boxes[i].position.y = 0;
-      boxes[i].scale.set(1,1,1);
+      // boxes[i].position.y = 0;
+      // gsap.to(boxes[i].position, { duration:1, ease:"power4.out", y: 0});
+      // boxes[i].scale.set(1,1,1);
+      gsap.to(boxes[i].scale, { duration:0.5, ease:"power4.out", x: 1, y: 1, z: 1});
+      if(Math.round(THREE.MathUtils.radToDeg(boxes[i].rotation.x)) != 178 && Math.round(THREE.MathUtils.radToDeg(boxes[i].rotation.x)) != 179 && Math.round(THREE.MathUtils.radToDeg(boxes[i].rotation.x)) != 180 && Math.round(THREE.MathUtils.radToDeg(boxes[i].rotation.x)) != 270){
+        gsap.to(boxes[i].rotation, { duration:0.5, ease:"power4.out", x: 0, y: 0, z: 0});
+      }
+      // if(Math.round(THREE.MathUtils.radToDeg(boxes[i].rotation.x)) <= 178 && Math.round(THREE.MathUtils.radToDeg(boxes[i].rotation.x)) >= 180){ // This line was added to avoid the glitch with boxes chaotically spinning the very first time u open the site, scroll to boxesReady and move your mouse. We used ceil to round up, cuz with round u'd get 179 instead of 180, and I wanted it to be pretty)
+      // } // U stopped here
     }
+    titleAnimationFired = false;
+    previousBox = null;
   }
   if(intersections.length == 0 && boxesReady){
     titleText = "" //Remove text when no hover and no hint
@@ -247,10 +343,10 @@ function OnMouseDown(event){
   const intersections = raycaster.intersectObjects(scene.children, true);
   
   if (intersections.length > 0){
-    const selectedObjectName = intersections[0].object.name;
+    const selectedObjectIndex = intersections[0].object.name;
     if(boxesReady){
       // console.log(`Clicked on ${intersections[0].object.name}`);
-      switch (selectedObjectName){
+      switch (selectedObjectIndex){
         case 0:
           //Open link
           break
@@ -274,22 +370,9 @@ function OnMouseDown(event){
   }
 }
 
-
-// Initialize Lenis and adjust gsap
-const lenis = new Lenis({
-  autoRaf: true,
-  lerp: 0.05, // adjust the smoothness of the scroll
-  wheelMultiplier: 0.1 // adjust the speed/sensitivity of the scroll
-});
-gsap.ticker.lagSmoothing(0);
-
-window.addEventListener('load', ()=> {
-  lenis.scrollTo(0, { immediate: true });
-})
-
-lenis.on("scroll", (e) => {
-  currentScroll = e.scroll;
-})
+// window.addEventListener('DOMContentLoaded', (e) => {
+//   BGAudio.play();
+// });
 
 // Helper Functions
 function map(v, a, b, c, d) {

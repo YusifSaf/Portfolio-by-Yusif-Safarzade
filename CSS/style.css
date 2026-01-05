@@ -22,6 +22,10 @@ canvas{
   z-index: -1;
 }
 
+audio{
+    display: none;
+}
+
 /* Maximum scrolling space */
 .scroll-space {
     height: 2722px;
@@ -35,6 +39,7 @@ canvas{
     top: 0;
     left: 50%;
     transform: translateX(-50%);
+    /* opacity: 0%; */
 }
 
 .heading h1{
