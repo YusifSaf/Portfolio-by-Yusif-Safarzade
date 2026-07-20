@@ -1,68 +1,152 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portfolio</title>
-  <link rel="stylesheet" href="/CSS/portfolio.css">
-</head>
-<body>
-  <div class="title">
-    <a href="javascript:history.back()" class="back-button">
-      <img src="https://api.iconify.design/mdi/arrow-left-circle.svg?color=%23333333" alt="Back">
-    </a>
-    <h1 class="title-header">Portfolio</h1>
-  </div>
-  <div class="grid">
-    <a href="/HTML/Projects/project1.html" class="grid-item">
-      <img src="https://placehold.co/800x600/e0e0e0/666?text=Image+1" alt="Image 1">
-      <div class="overlay-text">Project Title 1</div>
-    </a>
-    <a href="#" class="grid-item">
-      <img src="https://placehold.co/800x600/d0d0d0/666?text=Image+2" alt="Image 2">
-      <div class="overlay-text">Project Title 2</div>
-    </a>
-    <a href="#" class="grid-item">
-      <img src="https://placehold.co/800x600/c0c0c0/666?text=Image+3" alt="Image 3">
-      <div class="overlay-text">Project Title 3</div>
-    </a>
-    <a href="#" class="grid-item">
-      <img src="https://placehold.co/800x600/b0b0b0/666?text=Image+4" alt="Image 4">
-      <div class="overlay-text">Project Title 4</div>
-    </a>
-    <a href="#" class="grid-item">
-      <img src="https://placehold.co/800x600/a0a0a0/666?text=Image+5" alt="Image 5">
-      <div class="overlay-text">Project Title 5</div>
-    </a>
-    <a href="#" class="grid-item">
-      <img src="https://placehold.co/800x600/909090/fff?text=Image+6" alt="Image 6">
-      <div class="overlay-text">Project Title 6</div>
-    </a>
-    <a href="#" class="grid-item">
-      <img src="https://placehold.co/800x600/808080/fff?text=Image+7" alt="Image 7">
-      <div class="overlay-text">Project Title 7</div>
-    </a>
-    <a href="#" class="grid-item">
-      <img src="https://placehold.co/800x600/707070/fff?text=Image+8" alt="Image 8">
-      <div class="overlay-text">Project Title 8</div>
-    </a>
-    <a href="#" class="grid-item">
-      <img src="https://placehold.co/800x600/606060/fff?text=Image+9" alt="Image 9">
-      <div class="overlay-text">Project Title 9</div>
-    </a>
-    <a href="#" class="grid-item">
-      <img src="https://placehold.co/800x600/505050/fff?text=Image+10" alt="Image 10">
-      <div class="overlay-text">Project Title 10</div>
-    </a>
-    <a href="#" class="grid-item">
-      <img src="https://placehold.co/800x600/404040/fff?text=Image+11" alt="Image 11">
-      <div class="overlay-text">Project Title 11</div>
-    </a>
-    <a href="#" class="grid-item">
-      <img src="https://placehold.co/800x600/303030/fff?text=Image+12" alt="Image 12">
-      <div class="overlay-text">Project Title 12</div>
-    </a>
-  </div>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio</title>
+    <link rel="stylesheet" href="/CSS/portfolio.css" />
+
+    <script src="https://unpkg.com/lenis@1.3.17/dist/lenis.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
+  </head>
+  <body>
+    <div class="title">
+      <a href="javascript:history.back()" class="back-button">
+        <img
+          src="https://api.iconify.design/mdi/arrow-left-circle.svg?color=%23333333"
+          alt="Back"
+        />
+      </a>
+      <h1 class="title-header">Portfolio</h1>
+    </div>
+
+    <div class="content-wrapper">
+      <!-- Web-based Category -->
+      <section class="category-section">
+        <h2 class="category-header">Web-based</h2>
+        <div class="grid">
+          <a href="/HTML/Projects/project.html?id=portfolio-website" class="grid-item">
+            <img src="/HTML/Projects/images/portfolio-website/hero.gif" alt="Portfolio Website" />
+            <div class="overlay-text">Portfolio Website</div>
+          </a>
+          <a href="/HTML/Projects/project.html?id=field-handbook" class="grid-item">
+            <img src="/HTML/Projects/images/field-handbook/hero.gif" alt="Field Handbook" />
+            <div class="overlay-text">Field Handbook</div>
+          </a>
+          <a href="/HTML/Projects/project.html?id=audio-visualizer" class="grid-item">
+            <img src="/HTML/Projects/images/audio-visualizer/hero.gif" alt="Audio Visualizer" />
+            <div class="overlay-text">Audio Visualizer</div>
+          </a>
+          <a href="/HTML/Projects/project.html?id=midi-visualizer" class="grid-item">
+            <img src="/HTML/Projects/images/midi-visualizer/hero.gif" alt="MIDI Visualizer" />
+            <div class="overlay-text">MIDI Visualizer</div>
+          </a>
+          <a href="/HTML/Projects/project.html?id=pitch-detector" class="grid-item">
+            <img src="/HTML/Projects/images/pitch-detector/hero.gif" alt="Pitch Detector" />
+            <div class="overlay-text">Pitch Detector</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- Game Development Category -->
+      <section class="category-section">
+        <h2 class="category-header">Game Development</h2>
+        <div class="grid">
+          <a href="/HTML/Projects/project.html?id=hyper-holes" class="grid-item">
+            <img src="/HTML/Projects/images/hyper-holes/hero.gif" alt="HyperHoles" />
+            <div class="overlay-text">HyperHoles</div>
+          </a>
+          <a href="/HTML/Projects/project.html?id=osmosis" class="grid-item">
+            <img src="/HTML/Projects/images/osmosis/hero.gif" alt="Osmosis" />
+            <div class="overlay-text">Osmosis</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- Design/Art Category -->
+      <section class="category-section">
+        <h2 class="category-header">Design / Art / Installation</h2>
+        <div class="grid">
+          <a href="/HTML/Projects/project.html?id=prema" class="grid-item">
+            <img src="/HTML/Projects/images/prema/hero.gif" alt="Prema. Advertisement" />
+            <div class="overlay-text">Prema. Advertisement</div>
+          </a>
+          <a href="/HTML/Projects/project.html?id=rvk" class="grid-item">
+            <img src="/HTML/Projects/images/rvk/hero.gif" alt="RVK. Motion Design" />
+            <div class="overlay-text">RVK. Motion Design</div>
+          </a>
+          <a href="/HTML/Projects/project.html?id=i-can-see-you" class="grid-item">
+            <img
+              src="/HTML/Projects/images/i-can-see-you/hero.gif"
+              alt="I can see you. Installation"
+            />
+            <div class="overlay-text">I can see you. Installation</div>
+          </a>
+          <a href="/HTML/Projects/project.html?id=physical-digital" class="grid-item">
+            <img
+              src="/HTML/Projects/images/physical-digital/image2.jpg"
+              alt="Physical / Digital. Art"
+            />
+            <div class="overlay-text">Physical / Digital. Art</div>
+          </a>
+        </div>
+      </section>
+      <section class="category-section">
+        <h2 class="category-contacts"><a href="/HTML/contacts.html">Contacts.</a></h2>
+      </section>
+    </div>
+
+    <script type="module">
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Initialize Lenis
+      const lenis = new Lenis({
+        autoRaf: true,
+      });
+
+      // Connect Lenis to ScrollTrigger for smooth integration
+      lenis.on("scroll", ScrollTrigger.update);
+      gsap.ticker.add((time) => {
+        lenis.raf(time * 1000);
+      });
+      gsap.ticker.lagSmoothing(0);
+
+      const titleHeader = document.querySelectorAll(".title");
+      const gridItems = document.querySelectorAll(".grid-item");
+
+      window.addEventListener("DOMContentLoaded", (e) => {
+        //Grid items animations
+        gsap.utils.toArray(gridItems).forEach((item) => {
+          gsap.from(item, {
+            y: 50,
+            opacity: 0,
+            // stagger:0.5,
+            duration: 0.3,
+            scrollTrigger: {
+              trigger: item,
+              start: "top 90%",
+              toggleActions: "play none none reverse",
+              ease: "expo.out",
+              // markers: true,
+            },
+          });
+        });
+
+        //Title and the back button animations
+        titleHeader.forEach((item) => {
+          gsap.fromTo(
+            item,
+            { y: 100, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 1,
+              ease: "expo.out",
+            },
+          );
+        });
+      });
+    </script>
+  </body>
 </html>

@@ -1,0 +1,32 @@
+{
+  "name": "portfolio-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "serve": "five-server --port=5500 --open=false",
+    "save": "bash scripts/save-version.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YusifSaf/Portfolio-by-Yusif-Safarzade.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/YusifSaf/Portfolio-by-Yusif-Safarzade/issues"
+  },
+  "homepage": "https://github.com/YusifSaf/Portfolio-by-Yusif-Safarzade#readme",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.7.0",
+    "eslint-config-prettier": "^10.1.8",
+    "five-server": "^0.4.5",
+    "globals": "^17.7.0",
+    "prettier": "^3.9.5"
+  }
+}

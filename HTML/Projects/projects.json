@@ -1,0 +1,317 @@
+{
+  "portfolio-website": {
+    "hero": "images/portfolio-website/hero.gif",
+    "title": "Portfolio Website",
+    "year": "Early 2026",
+    "role": "Programmer, Web-designer",
+    "tools": "HTML, CSS, JavaScript(Three, GSAP, Howler)",
+    "description": "An interactive website with modern animation, raycast system for user interactions, sound elements and convenient system of adding new projects using JSON.",
+    "media": [
+      {
+        "type": "image",
+        "src": "images/portfolio-website/image1.gif",
+        "caption": "Early prototype of the website made with p5.js"
+      }
+    ],
+    "links": [
+      "https://yusifsaf.github.io/Portfolio-by-Yusif-Safarzade/",
+      "https://github.com/YusifSaf/Portfolio-by-Yusif-Safarzade",
+      "/HTML/Projects/project.html?id=field-handbook"
+    ]
+  },
+
+  "field-handbook": {
+    "hero": "images/field-handbook/hero.gif",
+    "title": "Field Handbook",
+    "year": "Late 2025",
+    "role": "Programmer, Web-designer",
+    "tools": "HTML, CSS, JavaScript(Three, GSAP)",
+    "description": "This project was made for one of my design courses, which required us to do multiple page booklet on the topic of Hybrid Creatures. I decided to go with a website format to make it more interactive and engaging, along with the 3D model viewer, added to immerse viewers into the experience and fully convey the message",
+    "media": [
+      {
+        "type": "image",
+        "src": "images/field-handbook/image1.gif",
+        "caption": "Cursor movement reactive landing page made using three.js' raycast system"
+      },
+      {
+        "type": "image",
+        "src": "images/field-handbook/image2.gif",
+        "caption": "Built-in model viewer for enhanced user interaction"
+      },
+      {
+        "type": "image",
+        "src": "images/field-handbook/image3.gif",
+        "caption": "GSAP animations for visual smoothness"
+      }
+    ],
+    "links": [
+      "www.nothereyet.com",
+      "www.nothereyet.com",
+      "/HTML/Projects/project.html?id=audio-visualizer"
+    ]
+  },
+
+  "audio-visualizer": {
+    "hero": "images/audio-visualizer/hero.gif",
+    "title": "Audio Visualizer",
+    "year": "Mid 2025",
+    "role": "Programmer",
+    "tools": "p5.js",
+    "description": "This Song Visualizer was built as a self-project, using purely p5.js, and its built in FFT and PerlinNoise functionalities. Has got a full music player capabilities(stop, rewind, play, etc.). Also has a convinient navigation system using WASD. A song upload or link to Youtube / Spotify is going to be added in the future",
+    "media": [
+      {
+        "type": "image",
+        "src": "images/audio-visualizer/hero.gif",
+        "caption": "A small demo of the website. I recommend checking the website yourself."
+      }
+    ],
+    "links": [
+      "https://yusifsaf.github.io/Assignment%206/index.html",
+      "https://github.com/YusifSaf/YusifSaf.github.io/tree/main/Assignment%206",
+      "/HTML/Projects/project.html?id=midi-visualizer"
+    ]
+  },
+  "midi-visualizer": {
+    "hero": "images/midi-visualizer/hero.gif",
+    "title": "MIDI Visualizer",
+    "year": "Late 2025",
+    "role": "Programmer",
+    "tools": "p5.js",
+    "description": "This was a self project made for Creative Coding Club's DF Open Show exhibition. Made entirely with p5.js it both detecs a sound input and reads the MIDI messages, resulting in separate visualisation for sound (guitar in this case) and MIDI keyboard.",
+    "media": [
+      {
+        "type": "image",
+        "src": "images/midi-visualizer/image1.gif",
+        "caption": "Audio visualisation using custom FFT algorithm."
+      },
+      {
+        "type": "image",
+        "src": "images/midi-visualizer/image2.gif",
+        "caption": "MIDI visualisation using shape or text."
+      },
+      {
+        "type": "video",
+        "src": "https://www.youtube.com/embed/VIDEO_ID",
+        "caption": "A small performance video."
+      }
+    ],
+    "links": [
+      "www.nothereyet.com",
+      "www.nothereyet.com",
+      "/HTML/Projects/project.html?id=pitch-detector"
+    ]
+  },
+  "pitch-detector": {
+    "hero": "images/pitch-detector/hero.gif",
+    "title": "Pitch Detector",
+    "year": "Late 2025",
+    "role": "Programmer",
+    "tools": "p5.js",
+    "description": "This is another self project made when I was just starting to learn p5js. It uses FFT for volume analysis and machine learning based library - ml5 for pitch analysis and detection.",
+    "media": [
+      {
+        "type": "image",
+        "src": "images/pitch-detector/hero.gif",
+        "caption": "Feel free to test the website yourself"
+      }
+    ],
+    "links": [
+      "https://yusifsaf.github.io/Assignment%205/index.html",
+      "www.nothereyet.com",
+      "/HTML/Projects/project.html?id=hyper-holes"
+    ]
+  },
+  "hyper-holes": {
+    "hero": "images/hyper-holes/hero.gif",
+    "title": "Hyper Holes",
+    "year": "mid 2025",
+    "role": "Programmer, UI/UX Designer, Motion Designer",
+    "tools": "Unity 6, Adobe Illustrator, Adobe After Effects",
+    "description": "HyperHoles is a mobile arcade game for IOS and Android, which conveys experience of an real-world iconic bar arcade game from 80s. It features real engine physics driven gameplay, truly random level generation, and responsive controls and UI. I've been developing this project for around 1.5 years. During development process I learned a lot about programming, logic, engine physics and animation, along with developing solid in Unity",
+    "media": [
+      {
+        "type": "video",
+        "src": "https://vimeo.com/1160299589?share=copy&fl=sv&fe=ci",
+        "caption": "Video of the gameplay"
+      },
+      {
+        "type": "image",
+        "src": "images/hyper-holes/hero.gif",
+        "caption": "UI Animations"
+      },
+      {
+        "type": "video",
+        "src": "https://vimeo.com/1160299692?share=copy&fl=sv&fe=ci",
+        "caption": "In-game store with cosmetics"
+      }
+    ],
+    "links": ["ww.nothereyet.com", "www.nothereyet.com", "/HTML/Projects/project.html?id=osmosis"]
+  },
+  "osmosis": {
+    "hero": "images/osmosis/hero.gif",
+    "title": "Osmosis",
+    "year": "late 2024",
+    "role": "Team Lead, Programmer",
+    "tools": "Unity 5",
+    "description": "I took the role of team lead for this demo game developed for one of my university courses along with 5 other students. It was a valuable experience, as I got to learn how to organize and assign tasks, communicate, find solutions to unexpected problems and ensuring smooth development process. This is Osmosis - a demo game set in a fictional dystopian world, corrupted by capitalism and corporation. Through series of action gameplay loops and puzzles, you, the main characted, will set the other characters of this world free.",
+    "media": [
+      {
+        "type": "image",
+        "src": "images/osmosis/image (1).jpg",
+        "caption": ""
+      },
+      {
+        "type": "image",
+        "src": "images/osmosis/image (2).jpg",
+        "caption": ""
+      },
+      {
+        "type": "image",
+        "src": "images/osmosis/image (3).jpg",
+        "caption": ""
+      },
+      {
+        "type": "image",
+        "src": "images/osmosis/image (4).jpg",
+        "caption": ""
+      },
+      {
+        "type": "image",
+        "src": "images/osmosis/image (5).jpg",
+        "caption": "Screenshots of the in-game environments"
+      },
+      {
+        "type": "image",
+        "src": "images/osmosis/image (6).png",
+        "caption": "Boss fight level"
+      },
+      {
+        "type": "video",
+        "src": "https://vimeo.com/1160886261?share=copy&fl=sv&fe=ci",
+        "caption": "Video of the gameplay"
+      }
+    ],
+    "links": ["ww.nothereyet.com", "www.nothereyet.com", "/HTML/Projects/project.html?id=prema"]
+  },
+  "prema": {
+    "hero": "images/prema/hero.gif",
+    "title": "Prema Advertisement",
+    "year": "late 2024",
+    "role": "Art Director, Photographer, Video Editor",
+    "tools": "Adobe Photoshop, Adobe Lightroom, Adobe Premier Pro",
+    "description": "This advertisement project is an advertisement strategy and a series of social media posts made for a real Toronto-based cafe. Firstly I developed the creative brief and discussed it with the client. Since Cafe's presence on social media was low, It needed a strategy: simple, frequent posts. Cafe's business plan targets young professionals, who are active social media users. Therefore, staying active on social platforms was essential. I took the photographs in the cafe, edited them, revised it with client and made the final render of the video and photograph series.",
+    "media": [
+      {
+        "type": "video",
+        "src": "https://vimeo.com/1161565010?share=copy&fl=sv&fe=ci",
+        "caption": "The final video post for social media page"
+      },
+      {
+        "type": "video",
+        "src": "https://vimeo.com/1161566053?share=copy&fl=sv&fe=ci",
+        "caption": "The storyboard for 3 different video ideas"
+      },
+      {
+        "type": "image",
+        "src": "images/prema/PremaShoot-1.jpg",
+        "caption": ""
+      },
+      {
+        "type": "image",
+        "src": "images/prema/PremaShoot-2.jpg",
+        "caption": ""
+      },
+      {
+        "type": "image",
+        "src": "images/prema/PremaShoot-3.jpg",
+        "caption": ""
+      },
+      {
+        "type": "image",
+        "src": "images/prema/PremaShoot-4.jpg",
+        "caption": ""
+      },
+      {
+        "type": "image",
+        "src": "images/prema/PremaShoot-5.jpg",
+        "caption": "Photography posts for social media strategy"
+      }
+    ],
+    "links": ["www.nothereyet.com", "www.nothereyet.com", "/HTML/Projects/project.html?id=rvk"]
+  },
+  "rvk": {
+    "hero": "images/rvk/hero.gif",
+    "title": "RVK",
+    "year": "late 2023",
+    "role": "Art Director, Photographer, Video Editor",
+    "tools": "Adobe Photoshop, Adobe Lightroom, Adobe Premier Pro",
+    "description": "RVK is a Spotify and Youtube hosted podcast known for its non-traditional take on trivial topics. The podcast's owner provided an original music piece and emphasized retaining its legacy as a core element of the brand's design. The key goal was to Develop a distinctive brand identity for RVK that creates a lasting association between its visual elements and audio experience, enhancing brand recognition. When the project began, the podcast was in its early stages and lacked cohesive branding. It required both a unique logotype and a memorable intro animation to play at the start of each episode. The design had to harmonize with the provided music and reflect its grunge-inspired aesthetic. The RVK logotype features stylized lettering where the letter V transforms into a microphone stand, subtly hinting at the podcast's core theme and purpose. This design choice reinforces the connection to audio and broadcasting while making the logo visually engaging and relevant. For the intro animation, a dynamic, fast-paced sequence was crafted to synchronize with the music. The animation incorporates rough grunge textures, displacement maps, cinematic lens flares, chromatic aberration, and refined color grading to heighten the immersive, grunge-inspired aesthetic. This approach delivers a cinematic and memorable opening that aligns perfectly with the podcast's tone and identity.",
+    "media": [
+      {
+        "type": "video",
+        "src": "https://vimeo.com/1161953818?share=copy&fl=sv&fe=ci",
+        "caption": "The final animation video"
+      },
+      {
+        "type": "image",
+        "src": "images/rvk/image1.jpg",
+        "caption": "Research behind the logotype"
+      }
+    ],
+    "links": [
+      "www.nothereyet.com",
+      "www.nothereyet.com",
+      "/HTML/Projects/project.html?id=I-can-see-you"
+    ]
+  },
+  "I-can-see-you": {
+    "hero": "images/i-can-see-you/hero.gif",
+    "title": "I can see you",
+    "year": "Early 2026",
+    "role": "Programmer, Artist",
+    "tools": "HTML, CSS, JS, Three.js, Ml5.js",
+    "description": "This is a self-project that was displayed on DF Open Show. It uses Three.js for rendering and machine learning face tracking, to create an eerie effect of constantly being observed or watched. No matter where u go, the eyes will be watching you.",
+    "media": [
+      {
+        "type": "video",
+        "src": "https://www.youtube.com/embed/VIDEO_ID",
+        "caption": "Video demo"
+      },
+      {
+        "type": "image",
+        "src": "images/i-can-see-you/image1.gif",
+        "caption": "Examples on a big screen"
+      }
+    ],
+    "links": [
+      "www.nothereyet.com",
+      "www.nothereyet.com",
+      "/HTML/Projects/project.html?id=physical-digital"
+    ]
+  },
+  "physical-digital": {
+    "hero": "images/physical-digital/image2.jpg",
+    "title": "Physical / Digital",
+    "year": "early 2024",
+    "role": "Artist, Designer",
+    "tools": "Graphite Pens, Adobe photoshop",
+    "description": "Here I tried to bring digital and physical worlds together and blend them in one piece. Initially, I drew a common still-life from observation with graphite pencils on paper in academic technique. Since it was too trivial, I turned into something more complex. By posterizing the original drawing and turning it all into just 4 values, and then assigning each of 4 collages to the values from dark to light the collage effect was made. Then by layering, displacing, coloring, ripping and blending various pieces of collages in different places the sense of volume was achieved. It is worth mentioning that collages used in the background, that I downloaded from internet, were also initially hand-crafted and then scanned.",
+    "media": [
+      {
+        "type": "image",
+        "src": "images/physical-digital/image1.jpg",
+        "caption": "Original drawing"
+      },
+      {
+        "type": "image",
+        "src": "images/physical-digital/image2.jpg",
+        "caption": "The final result"
+      }
+    ],
+    "links": [
+      "www.nothereyet.com",
+      "www.nothereyet.com",
+      "/HTML/Projects/project.html?id=portfolio-website"
+    ]
+  }
+}
