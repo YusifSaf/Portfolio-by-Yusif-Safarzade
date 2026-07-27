@@ -29,6 +29,18 @@ let previousTitleText = ""; //Tracks last shown scroll-phase text so we only fad
 // the scroll formula can leave a box at any raw rotation, so there is no fixed
 // "default" angle that's correct for every scroll position.
 let hoverBaseRotationDeg = null;
+// Set right when a clicked box starts its click-spin (below), so a stray
+// mousemove/mousedown during the spin+navigate window can't start a second
+// tween or a second navigation. Reset on pageshow, since a bfcache restore
+// would otherwise resurrect this as permanently-true on the page navigated FROM.
+let isNavigatingAway = false;
+
+// Tune the click-to-navigate spin here (plays once when a box is clicked to
+// switch pages, before the page actually navigates):
+const CLICK_SPIN_DURATION = 0.5; // seconds, total animation time
+const CLICK_SPIN_Y_DEG = 270; // full turns on the Y axis
+// How far X/Z swing out (and back) mid-spin, for the "off-axis"/natural wobble.
+const CLICK_SPIN_WOBBLE_DEG = { x: 15, z: -12 };
 
 //Audio References
 let audioPlayed = false;
@@ -73,6 +85,7 @@ window.addEventListener("pageshow", () => {
   // a full reset here covers that path; on a genuinely fresh load it's a no-op
   // since everything is already at its initial values.
   resetAllBoxRotations();
+  isNavigatingAway = false;
   lenis.start();
   lenis.scrollTo(0, { immediate: true });
   currentScroll = 0;
@@ -326,11 +339,66 @@ function resetBoxHover() {
   }
 }
 
+// Plays the click-to-navigate spin on `box` (a full Y spin plus a small X/Z
+// wobble that swings out and back within the same duration, so the box lands
+// EXACTLY where it started), then calls onComplete. This only runs while
+// boxesReady is true (the only time a click can navigate), and render()'s
+// scroll formula never writes rotation.x during that window either - so it's
+// safe to tween all three axes here without fighting the per-frame scroll code.
+function playClickSpin(box, onComplete) {
+  const startX = box.rotation.x;
+  const startY = box.rotation.y;
+  const startZ = box.rotation.z;
+  const wobbleX = THREE.MathUtils.degToRad(CLICK_SPIN_WOBBLE_DEG.x);
+  const wobbleZ = THREE.MathUtils.degToRad(CLICK_SPIN_WOBBLE_DEG.z);
+
+  const tl = gsap.timeline({
+    onComplete: () => {
+      // Force an exact landing - guards against any float drift from the
+      // tween so the box is provably back at its pre-spin rotation.
+      box.rotation.set(startX, startY, startZ);
+      onComplete();
+    },
+  });
+  tl.to(
+    box.rotation,
+    {
+      duration: CLICK_SPIN_DURATION,
+      ease: "power1.inOut",
+      y: startY + THREE.MathUtils.degToRad(CLICK_SPIN_Y_DEG),
+    },
+    0,
+  );
+  tl.to(
+    box.rotation,
+    {
+      duration: CLICK_SPIN_DURATION / 2,
+      ease: "sine.inOut",
+      x: startX + wobbleX,
+      z: startZ + wobbleZ,
+      yoyo: true,
+      repeat: 1,
+    },
+    0,
+  );
+}
+
+// Shared by every box whose click switches to another page: play the spin,
+// THEN reset hover state and navigate - never before the spin finishes.
+function navigateWithSpin(box, url) {
+  isNavigatingAway = true;
+  playClickSpin(box, () => {
+    resetAllBoxRotations();
+    window.open(url, "_self");
+  });
+}
+
 // Hover and Press Raycaster Setup. MOUSE LOGIC
 const raycaster = new THREE.Raycaster();
 document.addEventListener("mousemove", OnMouseMove);
 document.addEventListener("mousedown", OnMouseDown);
 function OnMouseMove(event) {
+  if (isNavigatingAway) return; // don't fight the click-spin tween mid-navigation
   const coords = new THREE.Vector2(
     (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
     -((event.clientY / renderer.domElement.clientHeight) * 2 - 1),
@@ -454,6 +522,7 @@ function OnMouseMove(event) {
 }
 
 function OnMouseDown(event) {
+  if (isNavigatingAway) return; // ignore re-clicks while a spin+navigation is already in flight
   const coords = new THREE.Vector2(
     (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
     -((event.clientY / renderer.domElement.clientHeight) * 2 - 1),
@@ -492,11 +561,11 @@ function OnMouseDown(event) {
         }
         case 1:
           clickAudio.play();
-          // Reset before navigating away so that IF this page gets bfcache'd
-          // (browser/UI back button restoring it exactly as left), the
-          // restored snapshot doesn't show this box frozen mid-tilt.
-          resetAllBoxRotations();
-          window.open("HTML/portfolio.html", "_self");
+          // Spins the box first, then resets hover state and navigates - see
+          // navigateWithSpin/playClickSpin above. The reset-before-navigating
+          // is still what protects a bfcache restore from showing this box
+          // frozen mid-tilt; it just now happens after the spin finishes.
+          navigateWithSpin(boxes[selectedObjectIndex], "HTML/portfolio.html");
           break;
         case 2:
           clickAudio.play();
@@ -504,13 +573,11 @@ function OnMouseDown(event) {
           break;
         case 3:
           clickAudio.play();
-          resetAllBoxRotations();
-          window.open("HTML/about.html", "_self");
+          navigateWithSpin(boxes[selectedObjectIndex], "HTML/about.html");
           break;
         case 4:
           clickAudio.play();
-          resetAllBoxRotations();
-          window.open("HTML/contacts.html", "_self");
+          navigateWithSpin(boxes[selectedObjectIndex], "HTML/contacts.html");
           break;
         default:
           console.log("No such object found :/");
