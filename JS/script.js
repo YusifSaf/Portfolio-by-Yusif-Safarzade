@@ -8,6 +8,11 @@ import { gsap } from "//cdn.skypack.dev/gsap?min";
 // Variables
 let snap = 0;
 const rotAmount = 25;
+// How hard boxes get pulled toward the nearest right angle in the dark buffer:
+// 1 = exact lock (collapses neighboring boxes onto the same angle, since their
+// 25deg spacing spans more than one 90deg slot); 0 = no pull, full spiral.
+// 0.5 keeps every box distinct while landing much closer to a right angle.
+const LOCK_STRENGTH = 0.1;
 const distance = 280;
 let currentScroll = 0;
 let y = 0;
@@ -20,6 +25,13 @@ const scaleOnHover = 1.3;
 let previousBox = null;
 let titleAnimationFired = false; //State variable for firing title fade animation just once
 let currentlyHovering = false;
+let previousTitleText = ""; //Tracks last shown scroll-phase text so we only fade on change
+// Snapshot of the currently-hovered box's rotation, taken the instant hover starts.
+// Hover tweens apply a small OFFSET on top of this base and restore to this exact
+// value on hover-exit, instead of ever tweening to/from a hardcoded absolute angle -
+// the scroll formula can leave a box at any raw rotation, so there is no fixed
+// "default" angle that's correct for every scroll position.
+let hoverBaseRotationDeg = null;
 
 //Audio References
 let audioPlayed = false;
@@ -40,6 +52,12 @@ var clickAudio = new Howl({
 });
 let scrollToVolume = 0;
 
+// Let us own scroll position on load/back-forward nav instead of the browser
+// silently restoring it (the previous source of the reload/back scroll-jump bug)
+if ("scrollRestoration" in history) {
+  history.scrollRestoration = "manual";
+}
+
 // Initialize Lenis and adjust gsap
 const lenis = new Lenis({
   autoRaf: true,
@@ -48,13 +66,42 @@ const lenis = new Lenis({
 });
 gsap.ticker.lagSmoothing(0);
 
-window.addEventListener("load", () => {
+// pageshow fires on normal loads AND on back/forward-cache restores (unlike
+// "load", which only fires once) - resetting here on every occurrence is what
+// keeps reload and browser-back navigation landing at a consistent position
+window.addEventListener("pageshow", () => {
+  // On a bfcache restore (persisted:true) this is the SAME JS heap as when we
+  // navigated away - any hover tilt/tween/stopped-lenis state from that moment
+  // is still sitting there untouched, which is what caused the freeze. Forcing
+  // a full reset here covers that path; on a genuinely fresh load it's a no-op
+  // since everything is already at its initial values.
+  resetAllBoxRotations();
+  lenis.start();
   lenis.scrollTo(0, { immediate: true });
+  currentScroll = 0;
 });
 
 lenis.on("scroll", (e) => {
   currentScroll = e.scroll;
 });
+
+// Click-to-enter splash: gates audio behind one deliberate click (browsers
+// block autoplay-with-sound regardless) and holds scroll/animation until then
+const splash = document.getElementById("splash");
+lenis.stop();
+splash.addEventListener(
+  "click",
+  () => {
+    BGAudio.play();
+    lenis.start();
+    gsap.to(splash, {
+      duration: 0.6,
+      opacity: 0,
+      onComplete: () => splash.remove(),
+    });
+  },
+  { once: true },
+);
 
 const scene = new THREE.Scene();
 
@@ -123,8 +170,18 @@ function render() {
     const bg = Math.round(map(scrollToRotation, y - 90, y, 0, 255));
     document.body.style.background = `rgb(${bg},${bg},${bg})`;
 
+    // Pulls each box onto the nearest right angle at the very start of this
+    // phase (matching the dark buffer's locked pose behind us) and fades that
+    // pull out by the end, where the boxes need to be exactly aligned at 0 -
+    // see the matching pull in branch 2 below for why both ends need this.
+    const lockWeight1 = map(scrollToRotation, y - 90, y, LOCK_STRENGTH, 0);
     for (let i = 0; i < boxes.length; i++) {
-      const deg = rotAmount * i - snap * i + map(scrollToRotation, 0, 180, 0, 360);
+      const rawDeg = rotAmount * i - snap * i + map(scrollToRotation, 0, 180, 0, 360);
+      // The lock target is derived from `rotAmount * i` (fixed per box), NOT
+      // from rawDeg itself - rawDeg drifts continuously through the phase, so
+      // recomputing "nearest 90" from it would flip targets mid-transition
+      // and cause a visible snap. Using a fixed target keeps the pull smooth.
+      const deg = rawDeg + nearestRightAngleOffset(rotAmount * i) * lockWeight1;
       boxes[i].rotation.x = THREE.MathUtils.degToRad(deg);
     }
 
@@ -156,6 +213,11 @@ function render() {
     y = 90 + (90 * scrollPos) / 100;
     scrollToRotation = map(scrollPos, 150, 250, y - 90, y);
 
+    // Cancels the stagger at the START of this phase (matching the aligned
+    // pose the boxes are frozen in through the 100-150 buffer) and lets it
+    // grow back out by the end, so exiting the buffer is seamless and the
+    // ending pose is a staggered "spiral" - see the -90 offset below for why
+    // that spiral is made to land exactly on branch 1's own starting pattern.
     snap = map(scrollToRotation, y - 90, y, rotAmount, 0);
     const camX = map(scrollToRotation, y - 90, y, 0, 1000);
     const camZ = map(scrollToRotation, y - 90, y, 1000, 0);
@@ -165,9 +227,26 @@ function render() {
     const bg = Math.round(map(scrollToRotation, y - 90, y, 255, 0));
     document.body.style.background = `rgb(${bg},${bg},${bg})`;
 
+    // Same idea as branch 1's lockWeight but mirrored: no pull at the start
+    // (continuous with the aligned buffer-1 pose), full pull by the end so
+    // each box lands exactly on a 90deg multiple instead of the raw staggered
+    // value - which is what was landing in the 250-300 dark buffer before.
+    const lockWeight2 = map(scrollToRotation, y - 90, y, 0, LOCK_STRENGTH);
     for (let i = 0; i < boxes.length; i++) {
-      const deg = rotAmount * i - snap * i + map(scrollToRotation, 0, 180, 0, 360);
-      boxes[boxes.length - 1 - i].rotation.x = THREE.MathUtils.degToRad(deg);
+      // The -90 aligns this phase's continuously-accumulating base rotation
+      // with branch 1's own base at scrollPos 0 (they drift apart by exactly
+      // 90deg otherwise, an artifact of the two phases' y/scrollToRotation
+      // ranges) - with it, this phase starts exactly matching the incoming
+      // frozen buffer pose and (before the lock pull) would end matching
+      // branch 1's own starting stagger; the lock pull then resolves that
+      // stagger onto clean right angles instead, and branch 1's matching
+      // pull keeps the next cycle's start in sync so the loop stays seamless.
+      // Also assigns directly to boxes[i] (not reversed) so the stagger's
+      // direction/slope across boxes matches branch 1's rather than mirroring it.
+      const rawDeg = rotAmount * i - snap * i + map(scrollToRotation, 0, 180, 0, 360) - 90;
+      // Same fixed-target reasoning as branch 1's lockWeight1 above.
+      const deg = rawDeg + nearestRightAngleOffset(rotAmount * i) * lockWeight2;
+      boxes[i].rotation.x = THREE.MathUtils.degToRad(deg);
     }
 
     boxesReady = false;
@@ -186,7 +265,18 @@ function render() {
   // console.log(boxesReady)
 
   resetBoxHover();
-  title.textContent = titleText; //Setting the HTML text
+  //Cross-fade the title text on change instead of swapping it abruptly
+  if (titleText !== previousTitleText) {
+    previousTitleText = titleText;
+    gsap.to(title, {
+      duration: 0.3,
+      opacity: 0,
+      onComplete: () => {
+        title.textContent = titleText;
+        gsap.to(title, { duration: 0.3, opacity: 1 });
+      },
+    });
+  }
 
   //This was set to eliminate the bug where you could hover and then scroll, leaving the cube in a messed up pose
   if (currentlyHovering) {
@@ -206,6 +296,29 @@ function render() {
 render();
 
 // Functions
+// Rotation.y/z are ONLY ever written by hover tweens (render()'s scroll formula
+// only ever touches rotation.x) - so they're the one piece of state that never
+// self-corrects. Normally the mousemove hover-exit handles clearing them, but
+// that requires an actual mousemove event to fire; clicking a box to navigate
+// away, or the Home button's scrollTo, both leave the page with no guarantee of
+// a further mousemove, so the tilt is left standing. This clears it directly
+// wherever hover state needs to be force-reset instead of relying on that event.
+function resetAllBoxRotations() {
+  for (let i = 0; i < boxes.length; i++) {
+    gsap.killTweensOf(boxes[i].rotation);
+    gsap.killTweensOf(boxes[i].scale);
+    boxes[i].rotation.y = 0;
+    boxes[i].rotation.z = 0;
+    boxes[i].scale.set(1, 1, 1);
+    boxes[i].position.y = 0;
+  }
+  hoverBaseRotationDeg = null;
+  previousBox = null;
+  currentlyHovering = false;
+  titleAnimationFired = false;
+  hoverWasSet = false;
+}
+
 //This function is constntly running in update to solve the bug with box's hover size staying the same if u hover on it and scroll past the boxesReady poing
 function resetBoxHover() {
   if (!boxesReady) {
@@ -230,16 +343,37 @@ function OnMouseMove(event) {
 
   const intersections = raycaster.intersectObjects(scene.children, true);
 
+  // Small relative hover tilt per box (x,y,z in degrees), applied ON TOP OF
+  // whatever rotation the box currently has - never as an absolute target.
+  const HOVER_TILT_DEG = {
+    0: { x: 12, y: 10, z: -8 },
+    1: { x: 0, y: 45, z: 18 },
+    2: { x: 25, y: 10, z: -9 },
+    3: { x: -18, y: 10, z: 11 },
+    4: { x: 14, y: -24, z: -3 },
+  };
+
+  function restoreBoxRotation(box) {
+    if (!hoverBaseRotationDeg) return;
+    gsap.to(box.rotation, {
+      duration: 0.5,
+      ease: "power4.out",
+      x: THREE.MathUtils.degToRad(hoverBaseRotationDeg.x),
+      y: THREE.MathUtils.degToRad(hoverBaseRotationDeg.y),
+      z: THREE.MathUtils.degToRad(hoverBaseRotationDeg.z),
+    });
+  }
+
   if (intersections.length > 0) {
     hoverWasSet = true;
     const selectedObjectIndex = intersections[0].object.name;
     //Reset when switching to another box
     if (previousBox !== null && previousBox !== selectedObjectIndex) {
       gsap.to(boxes[previousBox].scale, { duration: 0.5, ease: "power4.out", x: 1, y: 1, z: 1 });
-      gsap.to(boxes[previousBox].rotation, { duration: 0.5, ease: "power4.out", x: 0, y: 0, z: 0 });
+      if (boxesReady) {
+        restoreBoxRotation(boxes[previousBox]);
+      }
     }
-
-    previousBox = selectedObjectIndex;
 
     //When select is available
     if (boxesReady) {
@@ -249,160 +383,53 @@ function OnMouseMove(event) {
         hoverAudio.play();
         audioPlayed = true;
       }
-      let currentBox;
-      switch (selectedObjectIndex) {
-        case 0:
-          titleText = "Home.";
-          if (!titleAnimationFired) {
-            gsap.fromTo(
-              ".heading",
-              { opacity: 0 },
-              { duration: 0.5, ease: "power4.out", opacity: 1 },
-            );
-          }
-          titleAnimationFired = true;
 
-          currentBox = boxes[0];
-          // currentBox.position.y = yPositionOnHover;
-          // gsap.to(currentBox.position, { duration:1, ease:"power4.out", y: yPositionOnHover});
-          // currentBox.scale.set(scaleOnHover, scaleOnHover, scaleOnHover);
-          gsap.to(currentBox.scale, {
-            duration: 0.5,
-            ease: "power4.out",
-            x: scaleOnHover,
-            y: scaleOnHover,
-            z: scaleOnHover,
-          });
-          gsap.to(currentBox.rotation, {
-            duration: 0.5,
-            ease: "power4.out",
-            x: THREE.MathUtils.degToRad(12),
-            y: THREE.MathUtils.degToRad(10),
-            z: THREE.MathUtils.degToRad(-8),
-          });
-          break;
-        case 1:
-          titleText = "Portfolio.";
-          if (!titleAnimationFired) {
-            gsap.fromTo(
-              ".heading",
-              { opacity: 0 },
-              { duration: 0.5, ease: "power4.out", opacity: 1 },
-            );
-          }
-          titleAnimationFired = true;
+      // Snapshot the base rotation only when hover is landing on a NEW box, or
+      // we don't have one yet (previousBox can already equal this box from an
+      // incidental hover while boxesReady was still false, e.g. during the
+      // splash screen - that never captured a base, so it'd otherwise be
+      // mistaken for "already hovering this box, nothing to do" and skipped).
+      // Never re-capture on every tick of an ALREADY-ready hover though, or
+      // we'd capture a mid-tween value and ratchet the base each frame.
+      if (previousBox !== selectedObjectIndex || !hoverBaseRotationDeg) {
+        const target = boxes[selectedObjectIndex];
+        hoverBaseRotationDeg = {
+          x: THREE.MathUtils.radToDeg(target.rotation.x),
+          y: THREE.MathUtils.radToDeg(target.rotation.y),
+          z: THREE.MathUtils.radToDeg(target.rotation.z),
+        };
+      }
 
-          currentBox = boxes[1];
-          // currentBox.position.x = yPositionOnHover;
-          // currentBox.scale.set(scaleOnHover, scaleOnHover, scaleOnHover);
-          gsap.to(currentBox.scale, {
-            duration: 0.5,
-            ease: "power4.out",
-            x: scaleOnHover,
-            y: scaleOnHover,
-            z: scaleOnHover,
-          });
-          gsap.to(currentBox.rotation, {
-            duration: 0.5,
-            ease: "power4.out",
-            x: THREE.MathUtils.degToRad(0),
-            y: THREE.MathUtils.degToRad(45),
-            z: THREE.MathUtils.degToRad(18),
-          });
-          // currentBox.rotation.set(THREE.MathUtils.degToRad(45), THREE.MathUtils.degToRad(45), THREE.MathUtils.degToRad(45));
-          break;
-        case 2:
-          titleText = "Resume.";
-          if (!titleAnimationFired) {
-            gsap.fromTo(
-              ".heading",
-              { opacity: 0 },
-              { duration: 0.5, ease: "power4.out", opacity: 1 },
-            );
-          }
-          titleAnimationFired = true;
+      const titles = { 0: "Home.", 1: "Portfolio.", 2: "Resume.", 3: "About.", 4: "Contacts." };
+      if (titles[selectedObjectIndex] !== undefined) {
+        titleText = titles[selectedObjectIndex];
+        if (!titleAnimationFired) {
+          gsap.fromTo(".heading", { opacity: 0 }, { duration: 0.5, ease: "power4.out", opacity: 1 });
+        }
+        titleAnimationFired = true;
 
-          currentBox = boxes[2];
-          // currentBox.position.y = yPositionOnHover;
-          // currentBox.scale.set(scaleOnHover, scaleOnHover, scaleOnHover);
-          gsap.to(currentBox.scale, {
-            duration: 0.5,
-            ease: "power4.out",
-            x: scaleOnHover,
-            y: scaleOnHover,
-            z: scaleOnHover,
-          });
-          gsap.to(currentBox.rotation, {
-            duration: 0.5,
-            ease: "power4.out",
-            x: THREE.MathUtils.degToRad(25),
-            y: THREE.MathUtils.degToRad(10),
-            z: THREE.MathUtils.degToRad(-9),
-          });
-          break;
-        case 3:
-          titleText = "About.";
-          if (!titleAnimationFired) {
-            gsap.fromTo(
-              ".heading",
-              { opacity: 0 },
-              { duration: 0.5, ease: "power4.out", opacity: 1 },
-            );
-          }
-          titleAnimationFired = true;
-
-          currentBox = boxes[3];
-          // currentBox.position.y = yPositionOnHover;
-          // currentBox.scale.set(scaleOnHover, scaleOnHover, scaleOnHover);
-          gsap.to(currentBox.scale, {
-            duration: 0.5,
-            ease: "power4.out",
-            x: scaleOnHover,
-            y: scaleOnHover,
-            z: scaleOnHover,
-          });
-          gsap.to(currentBox.rotation, {
-            duration: 0.5,
-            ease: "power4.out",
-            x: THREE.MathUtils.degToRad(-18),
-            y: THREE.MathUtils.degToRad(10),
-            z: THREE.MathUtils.degToRad(11),
-          });
-          break;
-        case 4:
-          titleText = "Contacts.";
-          if (!titleAnimationFired) {
-            gsap.fromTo(
-              ".heading",
-              { opacity: 0 },
-              { duration: 0.5, ease: "power4.out", opacity: 1 },
-            );
-          }
-          titleAnimationFired = true;
-
-          currentBox = boxes[4];
-          // currentBox.position.y = yPositionOnHover;
-          // currentBox.scale.set(scaleOnHover, scaleOnHover, scaleOnHover);
-          gsap.to(currentBox.scale, {
-            duration: 0.5,
-            ease: "power4.out",
-            x: scaleOnHover,
-            y: scaleOnHover,
-            z: scaleOnHover,
-          });
-          gsap.to(currentBox.rotation, {
-            duration: 0.5,
-            ease: "power4.out",
-            x: THREE.MathUtils.degToRad(14),
-            y: THREE.MathUtils.degToRad(-24),
-            z: THREE.MathUtils.degToRad(-3),
-          });
-          break;
-        default:
-          console.log("No such object found :/");
-          break;
+        const currentBox = boxes[selectedObjectIndex];
+        const tilt = HOVER_TILT_DEG[selectedObjectIndex];
+        gsap.to(currentBox.scale, {
+          duration: 0.5,
+          ease: "power4.out",
+          x: scaleOnHover,
+          y: scaleOnHover,
+          z: scaleOnHover,
+        });
+        gsap.to(currentBox.rotation, {
+          duration: 0.5,
+          ease: "power4.out",
+          x: THREE.MathUtils.degToRad(hoverBaseRotationDeg.x + tilt.x),
+          y: THREE.MathUtils.degToRad(hoverBaseRotationDeg.y + tilt.y),
+          z: THREE.MathUtils.degToRad(hoverBaseRotationDeg.z + tilt.z),
+        });
+      } else {
+        console.log("No such object found :/");
       }
     }
+
+    previousBox = selectedObjectIndex;
   }
   if (intersections.length == 0) {
     currentlyHovering = false;
@@ -412,21 +439,15 @@ function OnMouseMove(event) {
     }
     //Restore default box position and scale when not hovering over any.
     for (let i = 0; i < boxes.length; i++) {
-      // boxes[i].position.y = 0;
-      // gsap.to(boxes[i].position, { duration:1, ease:"power4.out", y: 0});
-      // boxes[i].scale.set(1,1,1);
       gsap.to(boxes[i].scale, { duration: 0.5, ease: "power4.out", x: 1, y: 1, z: 1 });
-      if (
-        Math.round(THREE.MathUtils.radToDeg(boxes[i].rotation.x)) != 178 &&
-        Math.round(THREE.MathUtils.radToDeg(boxes[i].rotation.x)) != 179 &&
-        Math.round(THREE.MathUtils.radToDeg(boxes[i].rotation.x)) != 180 &&
-        Math.round(THREE.MathUtils.radToDeg(boxes[i].rotation.x)) != 270
-      ) {
-        gsap.to(boxes[i].rotation, { duration: 0.5, ease: "power4.out", x: 0, y: 0, z: 0 });
-      }
-      // if(Math.round(THREE.MathUtils.radToDeg(boxes[i].rotation.x)) <= 178 && Math.round(THREE.MathUtils.radToDeg(boxes[i].rotation.x)) >= 180){ // This line was added to avoid the glitch with boxes chaotically spinning the very first time u open the site, scroll to boxesReady and move your mouse. We used ceil to round up, cuz with round u'd get 179 instead of 180, and I wanted it to be pretty)
-      // } // U stopped here
     }
+    // Only the box that was actually hovered needs its rotation restored -
+    // and only to ITS OWN captured base, since that's the one true "correct"
+    // angle for wherever the scroll position currently is.
+    if (previousBox !== null && boxesReady) {
+      restoreBoxRotation(boxes[previousBox]);
+    }
+    hoverBaseRotationDeg = null;
     titleAnimationFired = false;
     previousBox = null;
   }
@@ -450,12 +471,34 @@ function OnMouseDown(event) {
     if (boxesReady) {
       // console.log(`Clicked on ${intersections[0].object.name}`);
       switch (selectedObjectIndex) {
-        case 0:
+        case 0: {
           clickAudio.play();
-          //Open link
+          // Box0 is necessarily still hovered (and tilted) right at the moment
+          // of this click, with no further mousemove guaranteed to ever fire to
+          // clean that up - reset it directly instead of leaving it frozen.
+          resetAllBoxRotations();
+          // render()'s per-frame "if (currentlyHovering) lenis.stop()" guard
+          // (a few lines below) leaves Lenis stopped, since we're necessarily
+          // still hovering box 0 right at the moment of this click - flipping
+          // the flag alone doesn't take effect until next frame, so scrollTo
+          // would get started-then-immediately-cancelled. Explicitly starting
+          // it here first is what makes the scroll-to-top actually happen.
+          lenis.start();
+          // Rewind only to the start of the CURRENT dark-light-dark cycle
+          // (scroll is unbounded and just wraps via %300), not all the way to
+          // absolute 0 - otherwise after a lot of scrolling this animates over
+          // the entire scroll history at once, spinning through several full
+          // rotations in the same fixed 1.2s duration.
+          const cycleStart = Math.floor(currentScroll / 300) * 300;
+          lenis.scrollTo(cycleStart, { duration: 1.2 });
           break;
+        }
         case 1:
           clickAudio.play();
+          // Reset before navigating away so that IF this page gets bfcache'd
+          // (browser/UI back button restoring it exactly as left), the
+          // restored snapshot doesn't show this box frozen mid-tilt.
+          resetAllBoxRotations();
           window.open("HTML/portfolio.html", "_self");
           break;
         case 2:
@@ -464,10 +507,12 @@ function OnMouseDown(event) {
           break;
         case 3:
           clickAudio.play();
+          resetAllBoxRotations();
           window.open("HTML/about.html", "_self");
           break;
         case 4:
           clickAudio.play();
+          resetAllBoxRotations();
           window.open("HTML/contacts.html", "_self");
           break;
         default:
@@ -477,11 +522,6 @@ function OnMouseDown(event) {
     }
   }
 }
-
-window.addEventListener("DOMContentLoaded", (e) => {
-  BGAudio.play();
-  // BGAudio.pause();
-});
 
 // function fadeVolumeUp(){
 //   BGAudio.fade(0.1, 1, 500)
@@ -498,6 +538,11 @@ function map(v, a, b, c, d) {
 }
 function clamp(v, a, b) {
   return Math.max(a, Math.min(b, v));
+}
+// How far `deg` is from the nearest multiple of 90 - used to pull boxes
+// onto clean right angles as they approach the dark/light freeze points.
+function nearestRightAngleOffset(deg) {
+  return Math.round(deg / 90) * 90 - deg;
 }
 
 // Resize handler

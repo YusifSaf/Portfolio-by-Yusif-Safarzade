@@ -26,9 +26,28 @@ audio {
   display: none;
 }
 
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(0, 0, 0);
+  cursor: pointer;
+}
+
+.splash p {
+  color: rgb(255, 255, 255);
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
 /* Maximum scrolling space */
 .scroll-space {
-  height: 2722px;
+  height: 20000px;
 }
 
 .heading {
