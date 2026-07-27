@@ -7,12 +7,9 @@ import { gsap } from "//cdn.skypack.dev/gsap?min";
 
 // Variables
 let snap = 0;
-const rotAmount = 25;
-// How hard boxes get pulled toward the nearest right angle in the dark buffer:
-// 1 = exact lock (collapses neighboring boxes onto the same angle, since their
-// 25deg spacing spans more than one 90deg slot); 0 = no pull, full spiral.
-// 0.5 keeps every box distinct while landing much closer to a right angle.
-const LOCK_STRENGTH = 0.1;
+// Per-box rotation stagger - the "spiral" spread. 45 gives a 180deg total fan
+// across the 5 boxes (0,45,90,135,180 relative), the widest useful spiral.
+const rotAmount = 22.5;
 const distance = 280;
 let currentScroll = 0;
 let y = 0;
@@ -138,6 +135,15 @@ for (let i = 0; i < 5; i++) {
   boxes.push(mesh);
 }
 
+// At the dark freeze the camera sits at +X, so the highest-index box is the one
+// closest to it (the visually prominent "front" cube). We slide the WHOLE spiral
+// by one shared amount so only this front cube lands exactly on a clean 90deg
+// multiple - the spacing between cubes is untouched, so the spiral keeps its full
+// width. This replaces the old per-cube pull that distorted/collapsed the spiral.
+// At rotAmount=45 the front cube already sits on a clean angle, so this shift is 0.
+const FRONT_BOX = boxes.length - 1;
+const FRONT_LOCK_OFFSET = nearestRightAngleOffset(rotAmount * FRONT_BOX);
+
 // Keep scene ambient-ish so normals show nicely
 const ambient = new THREE.AmbientLight(0xffffff, 0.0); // minimal; MeshNormalMaterial doesn't need lighting
 scene.add(ambient);
@@ -170,18 +176,14 @@ function render() {
     const bg = Math.round(map(scrollToRotation, y - 90, y, 0, 255));
     document.body.style.background = `rgb(${bg},${bg},${bg})`;
 
-    // Pulls each box onto the nearest right angle at the very start of this
-    // phase (matching the dark buffer's locked pose behind us) and fades that
-    // pull out by the end, where the boxes need to be exactly aligned at 0 -
-    // see the matching pull in branch 2 below for why both ends need this.
-    const lockWeight1 = map(scrollToRotation, y - 90, y, LOCK_STRENGTH, 0);
+    // Applies the shared front-cube shift at full strength at the very start of
+    // this phase (matching the dark freeze pose behind us) and fades it out by
+    // the end, where all boxes converge to a single aligned angle. It's ONE
+    // constant added to every box, so the spiral spacing is never distorted.
+    const lockWeight1 = map(scrollToRotation, y - 90, y, 1, 0);
     for (let i = 0; i < boxes.length; i++) {
       const rawDeg = rotAmount * i - snap * i + map(scrollToRotation, 0, 180, 0, 360);
-      // The lock target is derived from `rotAmount * i` (fixed per box), NOT
-      // from rawDeg itself - rawDeg drifts continuously through the phase, so
-      // recomputing "nearest 90" from it would flip targets mid-transition
-      // and cause a visible snap. Using a fixed target keeps the pull smooth.
-      const deg = rawDeg + nearestRightAngleOffset(rotAmount * i) * lockWeight1;
+      const deg = rawDeg + FRONT_LOCK_OFFSET * lockWeight1;
       boxes[i].rotation.x = THREE.MathUtils.degToRad(deg);
     }
 
@@ -227,25 +229,20 @@ function render() {
     const bg = Math.round(map(scrollToRotation, y - 90, y, 255, 0));
     document.body.style.background = `rgb(${bg},${bg},${bg})`;
 
-    // Same idea as branch 1's lockWeight but mirrored: no pull at the start
-    // (continuous with the aligned buffer-1 pose), full pull by the end so
-    // each box lands exactly on a 90deg multiple instead of the raw staggered
-    // value - which is what was landing in the 250-300 dark buffer before.
-    const lockWeight2 = map(scrollToRotation, y - 90, y, 0, LOCK_STRENGTH);
+    // Mirror of branch 1: no shift at the start (continuous with the aligned
+    // light-buffer pose) fading up to the full shared shift by the dark freeze,
+    // so the front cube lands exactly on a clean angle there.
+    const lockWeight2 = map(scrollToRotation, y - 90, y, 0, 1);
     for (let i = 0; i < boxes.length; i++) {
-      // The -90 aligns this phase's continuously-accumulating base rotation
-      // with branch 1's own base at scrollPos 0 (they drift apart by exactly
-      // 90deg otherwise, an artifact of the two phases' y/scrollToRotation
-      // ranges) - with it, this phase starts exactly matching the incoming
-      // frozen buffer pose and (before the lock pull) would end matching
-      // branch 1's own starting stagger; the lock pull then resolves that
-      // stagger onto clean right angles instead, and branch 1's matching
-      // pull keeps the next cycle's start in sync so the loop stays seamless.
-      // Also assigns directly to boxes[i] (not reversed) so the stagger's
-      // direction/slope across boxes matches branch 1's rather than mirroring it.
+      // The -90 aligns this phase's continuously-accumulating base rotation with
+      // branch 1's own base at scrollPos 0 (they drift apart by exactly 90deg
+      // otherwise, an artifact of the two phases' scrollToRotation ranges) - with
+      // it, this phase starts exactly matching the incoming aligned pose and ends
+      // exactly matching branch 1's own starting spiral, so the dark->light->dark
+      // loop has no visible seam. Assigns directly to boxes[i] (not reversed) so
+      // the spiral's direction matches branch 1's rather than mirroring it.
       const rawDeg = rotAmount * i - snap * i + map(scrollToRotation, 0, 180, 0, 360) - 90;
-      // Same fixed-target reasoning as branch 1's lockWeight1 above.
-      const deg = rawDeg + nearestRightAngleOffset(rotAmount * i) * lockWeight2;
+      const deg = rawDeg + FRONT_LOCK_OFFSET * lockWeight2;
       boxes[i].rotation.x = THREE.MathUtils.degToRad(deg);
     }
 
