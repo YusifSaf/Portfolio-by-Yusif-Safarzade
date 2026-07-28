@@ -4,6 +4,8 @@
 
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js";
 import { gsap } from "//cdn.skypack.dev/gsap?min";
+import { generateColorScheme } from "./colorScheme.js";
+import { createGradientBackground } from "./gradientBackground.js";
 
 // Variables
 let snap = 0;
@@ -135,17 +137,108 @@ const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerH
 camera.position.set(-1000, 0, 0);
 camera.lookAt(0, 0, 0);
 
+// Random scheme every reload by default, but ?seed=1234 in the URL pins it to
+// a specific scheme - bookmark a look you like, or reproduce one for debugging.
+function resolveColorSeed() {
+  const urlSeed = new URLSearchParams(window.location.search).get("seed");
+  if (urlSeed !== null && urlSeed !== "" && !Number.isNaN(Number(urlSeed))) {
+    return Number(urlSeed);
+  }
+  return Math.floor(Math.random() * 1_000_000_000);
+}
+const colorSeed = resolveColorSeed();
+console.log(`Color scheme seed: ${colorSeed} (revisit with ?seed=${colorSeed} in the URL)`);
+const colorScheme = generateColorScheme(colorSeed);
+
+// speed multiplies how fast the color stops drift (1 = original pace) - bump
+// up/down here to tune the flow rate. Same seed as the color scheme, so the
+// flow's drift pattern is reproducible together with the rest of the look.
+const gradientBg = createGradientBackground({ seed: colorSeed, speed: 1.8 });
+document.body.appendChild(gradientBg.canvas);
+
 // Setup Boxes
 const boxes = [];
 const boxGeometry = new THREE.BoxGeometry(150, 150, 150);
-const material = new THREE.MeshNormalMaterial(); // closest to p5 normalMaterial()
+// Real per-face colors (replacing the old MeshNormalMaterial illusion, which
+// only faked distinct-looking faces via each face's normal direction).
+// MeshBasicMaterial is unlit/flat-shaded - cheap to render (no lighting math)
+// and makes the dark->light color transition a plain color lerp with no
+// lighting interaction to account for. Geometry is still shared across all 5
+// cubes; only these small material objects are duplicated per cube per face.
+const boxMaterials = []; // boxMaterials[cubeIndex][faceIndex]
 
 for (let i = 0; i < 5; i++) {
-  const mesh = new THREE.Mesh(boxGeometry, material);
+  const materials = Array.from(
+    { length: 6 },
+    (_, face) => new THREE.MeshBasicMaterial({ color: colorScheme.dark.faces[face][i] }),
+  );
+  boxMaterials.push(materials);
+  const mesh = new THREE.Mesh(boxGeometry, materials);
   mesh.name = i;
   mesh.position.x = distance * i - distance * 2;
   scene.add(mesh);
   boxes.push(mesh);
+}
+
+// Precomputed THREE.Color endpoints for the dark<->light transition - built
+// once here (not per frame) so applyColorPhase() below only ever does cheap
+// numeric lerps, never string/hex parsing, every frame.
+const boxDarkColors = boxMaterials.map((materials, cube) =>
+  materials.map((_, face) => new THREE.Color(colorScheme.dark.faces[face][cube])),
+);
+const boxLightColors = boxMaterials.map((materials, cube) =>
+  materials.map((_, face) => new THREE.Color(colorScheme.light.faces[face][cube])),
+);
+const bgDarkColors = colorScheme.dark.bg.map((hex) => new THREE.Color(hex));
+const bgLightColors = colorScheme.light.bg.map((hex) => new THREE.Color(hex));
+const bgLerpScratch = [new THREE.Color(), new THREE.Color()]; // reused every frame, no per-frame allocation
+
+// Every ROTATION_STEP_DEG of a cube's own X rotation, its face colors advance
+// by one slot in the fixed 6-slot palette - so as a cube spins, its faces
+// gradually pick up their neighbor's color instead of jumping straight to it.
+// The cycle position is derived straight from the cube's current rotation (not
+// a separate running counter), so it's correct whether the scroll is moving
+// forward or backward and needs no extra per-frame state.
+const ROTATION_STEP_DEG = 90;
+const FACE_COUNT = 6;
+// Reused every frame per face (2 lerps: dark<->light phase, then slot<->next
+// slot) - avoids allocating 2 THREE.Color per face per frame.
+const faceLerpScratchA = new THREE.Color();
+const faceLerpScratchB = new THREE.Color();
+
+// t: 0 = fully dark-phase colors, 1 = fully light-phase colors. Called from
+// every scroll branch below (including the frozen buffers, at a fixed 0 or 1)
+// so cube faces and the flowing background always match the current phase.
+function applyColorPhase(t) {
+  for (let cube = 0; cube < boxMaterials.length; cube++) {
+    const deg = THREE.MathUtils.radToDeg(boxes[cube].rotation.x);
+    const cyclePos = deg / ROTATION_STEP_DEG;
+    for (let face = 0; face < boxMaterials[cube].length; face++) {
+      const pos = cyclePos + face;
+      const slotA = (((Math.floor(pos) % FACE_COUNT) + FACE_COUNT) % FACE_COUNT);
+      const slotB = (slotA + 1) % FACE_COUNT;
+      const frac = pos - Math.floor(pos);
+      faceLerpScratchA.lerpColors(boxDarkColors[cube][slotA], boxLightColors[cube][slotA], t);
+      faceLerpScratchB.lerpColors(boxDarkColors[cube][slotB], boxLightColors[cube][slotB], t);
+      boxMaterials[cube][face].color.lerpColors(faceLerpScratchA, faceLerpScratchB, frac);
+    }
+  }
+  // getHexString() formats a fresh string each call - skip it on frames whose
+  // colors gradientBg.render() won't actually use (see REDRAW_EVERY_N_FRAMES
+  // in gradientBackground.js), rather than building 2 strings every frame.
+  if (gradientBg.willRedrawNextFrame()) {
+    bgLerpScratch[0].lerpColors(bgDarkColors[0], bgLightColors[0], t);
+    bgLerpScratch[1].lerpColors(bgDarkColors[1], bgLightColors[1], t);
+    gradientBg.setColors(`#${bgLerpScratch[0].getHexString()}`, `#${bgLerpScratch[1].getHexString()}`);
+    // document.body's own background sits behind the gradient canvas and is
+    // normally fully hidden by it - it only matters as a fallback for what the
+    // canvas's CSS blur reveals right at its own edge. Kept in the scheme's
+    // actual hue now (previously a flat grayscale left over from before the
+    // color system existed, which didn't match the gradient's hue at all) and
+    // updated on the same throttle as the canvas itself, instead of every
+    // single frame regardless of whether the value even changed.
+    document.body.style.background = `#${bgLerpScratch[0].getHexString()}`;
+  }
 }
 
 // At the dark freeze the camera sits at +X, so the highest-index box is the one
@@ -187,7 +280,6 @@ function render() {
     camera.lookAt(0, 0, 0);
 
     const bg = Math.round(map(scrollToRotation, y - 90, y, 0, 255));
-    document.body.style.background = `rgb(${bg},${bg},${bg})`;
 
     // Applies the shared front-cube shift at full strength at the very start of
     // this phase (matching the dark freeze pose behind us) and fades it out by
@@ -199,6 +291,9 @@ function render() {
       const deg = rawDeg + FRONT_LOCK_OFFSET * lockWeight1;
       boxes[i].rotation.x = THREE.MathUtils.degToRad(deg);
     }
+    // Called after rotation.x is set above, so the color-cycling offset in
+    // applyColorPhase reads this frame's rotation, not the previous frame's.
+    applyColorPhase(bg / 255);
 
     boxesReady = false;
     hoverWasSet = false; //So each loop it show the "Press to Interact."
@@ -215,13 +310,13 @@ function render() {
 
   if ((scrollPos > 100) & (scrollPos <= 150)) {
     y = 90;
-    document.body.style.background = `rgba(255, 255, 255)`;
+    applyColorPhase(1);
 
     boxesReady = true;
     if (!hoverWasSet) {
       titleText = "Press to Interact.";
     }
-    title.style.color = `rgb(${0},${0},${0})`;
+    title.style.color = colorScheme.textLight;
   }
 
   if ((scrollPos > 150) & (scrollPos <= 250)) {
@@ -240,7 +335,6 @@ function render() {
     camera.lookAt(0, 0, 0);
 
     const bg = Math.round(map(scrollToRotation, y - 90, y, 255, 0));
-    document.body.style.background = `rgb(${bg},${bg},${bg})`;
 
     // Mirror of branch 1: no shift at the start (continuous with the aligned
     // light-buffer pose) fading up to the full shared shift by the dark freeze,
@@ -258,6 +352,9 @@ function render() {
       const deg = rawDeg + FRONT_LOCK_OFFSET * lockWeight2;
       boxes[i].rotation.x = THREE.MathUtils.degToRad(deg);
     }
+    // Called after rotation.x is set above, so the color-cycling offset in
+    // applyColorPhase reads this frame's rotation, not the previous frame's.
+    applyColorPhase(bg / 255);
 
     boxesReady = false;
     titleText = "";
@@ -267,7 +364,7 @@ function render() {
 
   if ((scrollPos > 250) & (scrollPos < 300)) {
     y = 180;
-    document.body.style.background = `rgb(0,0,0)`;
+    applyColorPhase(0);
 
     boxesReady = false;
   }
@@ -297,8 +394,8 @@ function render() {
 
   //To dynamically control BGAudio volume
   BGAudio.volume(scrollToVolume);
-  console.log(audioPlayed);
 
+  gradientBg.render(performance.now() / 1000);
   renderer.render(scene, camera);
   requestAnimationFrame(render);
 }
@@ -395,6 +492,31 @@ function navigateWithSpin(box, url) {
 
 // Hover and Press Raycaster Setup. MOUSE LOGIC
 const raycaster = new THREE.Raycaster();
+
+// Small relative hover tilt per box (x,y,z in degrees), applied ON TOP OF
+// whatever rotation the box currently has - never as an absolute target.
+// Module-scoped (not rebuilt per mousemove) since it never changes.
+const HOVER_TILT_DEG = {
+  0: { x: 12, y: 10, z: -8 },
+  1: { x: 0, y: 45, z: 18 },
+  2: { x: 25, y: 10, z: -9 },
+  3: { x: -18, y: 10, z: 11 },
+  4: { x: 14, y: -24, z: -3 },
+};
+
+// Module-scoped (not redefined per mousemove) - only closes over the
+// module-level hoverBaseRotationDeg, never anything per-call.
+function restoreBoxRotation(box) {
+  if (!hoverBaseRotationDeg) return;
+  gsap.to(box.rotation, {
+    duration: 0.5,
+    ease: "power4.out",
+    x: THREE.MathUtils.degToRad(hoverBaseRotationDeg.x),
+    y: THREE.MathUtils.degToRad(hoverBaseRotationDeg.y),
+    z: THREE.MathUtils.degToRad(hoverBaseRotationDeg.z),
+  });
+}
+
 document.addEventListener("mousemove", OnMouseMove);
 document.addEventListener("mousedown", OnMouseDown);
 function OnMouseMove(event) {
@@ -407,27 +529,6 @@ function OnMouseMove(event) {
   raycaster.setFromCamera(coords, camera);
 
   const intersections = raycaster.intersectObjects(scene.children, true);
-
-  // Small relative hover tilt per box (x,y,z in degrees), applied ON TOP OF
-  // whatever rotation the box currently has - never as an absolute target.
-  const HOVER_TILT_DEG = {
-    0: { x: 12, y: 10, z: -8 },
-    1: { x: 0, y: 45, z: 18 },
-    2: { x: 25, y: 10, z: -9 },
-    3: { x: -18, y: 10, z: 11 },
-    4: { x: 14, y: -24, z: -3 },
-  };
-
-  function restoreBoxRotation(box) {
-    if (!hoverBaseRotationDeg) return;
-    gsap.to(box.rotation, {
-      duration: 0.5,
-      ease: "power4.out",
-      x: THREE.MathUtils.degToRad(hoverBaseRotationDeg.x),
-      y: THREE.MathUtils.degToRad(hoverBaseRotationDeg.y),
-      z: THREE.MathUtils.degToRad(hoverBaseRotationDeg.z),
-    });
-  }
 
   if (intersections.length > 0) {
     hoverWasSet = true;

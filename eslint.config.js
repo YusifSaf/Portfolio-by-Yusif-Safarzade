@@ -16,7 +16,8 @@ export default [
   {
     // JS/script.js imports THREE and gsap as ES modules; Lenis and Howler
     // are loaded as plain <script> tags in index.html, so they're globals here.
-    files: ["JS/script.js"],
+    // colorScheme.js/gradientBackground.js are browser-context modules script.js imports.
+    files: ["JS/script.js", "JS/colorScheme.js", "JS/gradientBackground.js"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
