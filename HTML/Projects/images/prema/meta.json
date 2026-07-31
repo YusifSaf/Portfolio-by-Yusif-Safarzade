@@ -1,0 +1,50 @@
+{
+  "hero": "hero.mp4",
+  "title": "Prema Advertisement",
+  "year": "late 2024",
+  "role": "Art Director, Photographer, Video Editor",
+  "tools": "Adobe Photoshop, Adobe Lightroom, Adobe Premier Pro",
+  "description": "This advertisement project is an advertisement strategy and a series of social media posts made for a real Toronto-based cafe. Firstly I developed the creative brief and discussed it with the client. Since Cafe's presence on social media was low, It needed a strategy: simple, frequent posts. Cafe's business plan targets young professionals, who are active social media users. Therefore, staying active on social platforms was essential. I took the photographs in the cafe, edited them, revised it with client and made the final render of the video and photograph series.",
+  "media": [
+    {
+      "type": "video",
+      "src": "https://vimeo.com/1161565010?share=copy&fl=sv&fe=ci",
+      "caption": "The final video post for social media page"
+    },
+    {
+      "type": "video",
+      "src": "https://vimeo.com/1161566053?share=copy&fl=sv&fe=ci",
+      "caption": "The storyboard for 3 different video ideas"
+    },
+    {
+      "type": "image",
+      "src": "PremaShoot-1.jpg",
+      "caption": ""
+    },
+    {
+      "type": "image",
+      "src": "PremaShoot-2.jpg",
+      "caption": ""
+    },
+    {
+      "type": "image",
+      "src": "PremaShoot-3.jpg",
+      "caption": ""
+    },
+    {
+      "type": "image",
+      "src": "PremaShoot-4.jpg",
+      "caption": ""
+    },
+    {
+      "type": "image",
+      "src": "PremaShoot-5.jpg",
+      "caption": "Photography posts for social media strategy"
+    }
+  ],
+  "links": [
+    "www.nothereyet.com",
+    "www.nothereyet.com",
+    "/HTML/Projects/project.html?id=rvk"
+  ]
+}

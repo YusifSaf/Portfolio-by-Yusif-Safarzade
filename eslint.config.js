@@ -54,4 +54,15 @@ export default [
       },
     },
   },
+  {
+    // Node generator/maintenance scripts (not browser code)
+    files: ["HTML/Projects/build-projects.js", "HTML/Projects/images/reconcile-meta.js"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
 ];

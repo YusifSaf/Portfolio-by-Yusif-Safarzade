@@ -1,0 +1,30 @@
+{
+  "hero": "hero.mp4",
+  "title": "Field Handbook",
+  "year": "Late 2025",
+  "role": "Programmer, Web-designer",
+  "tools": "HTML, CSS, JavaScript(Three, GSAP)",
+  "description": "This project was made for one of my design courses, which required us to do multiple page booklet on the topic of Hybrid Creatures. I decided to go with a website format to make it more interactive and engaging, along with the 3D model viewer, added to immerse viewers into the experience and fully convey the message",
+  "media": [
+    {
+      "type": "image",
+      "src": "image1.mp4",
+      "caption": "Cursor movement reactive landing page made using three.js' raycast system"
+    },
+    {
+      "type": "image",
+      "src": "image2.mp4",
+      "caption": "Built-in model viewer for enhanced user interaction"
+    },
+    {
+      "type": "image",
+      "src": "image3.mp4",
+      "caption": "GSAP animations for visual smoothness"
+    }
+  ],
+  "links": [
+    "www.nothereyet.com",
+    "www.nothereyet.com",
+    "/HTML/Projects/project.html?id=audio-visualizer"
+  ]
+}

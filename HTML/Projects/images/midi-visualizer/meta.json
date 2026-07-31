@@ -1,0 +1,30 @@
+{
+  "hero": "hero.gif",
+  "title": "MIDI Visualizer",
+  "year": "Late 2025",
+  "role": "Programmer",
+  "tools": "p5.js",
+  "description": "This was a self project made for Creative Coding Club's DF Open Show exhibition. Made entirely with p5.js it both detecs a sound input and reads the MIDI messages, resulting in separate visualisation for sound (guitar in this case) and MIDI keyboard.",
+  "media": [
+    {
+      "type": "image",
+      "src": "image1.gif",
+      "caption": "Audio visualisation using custom FFT algorithm."
+    },
+    {
+      "type": "image",
+      "src": "image2.gif",
+      "caption": "MIDI visualisation using shape or text."
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/embed/VIDEO_ID",
+      "caption": "A small performance video."
+    }
+  ],
+  "links": [
+    "www.nothereyet.com",
+    "www.nothereyet.com",
+    "/HTML/Projects/project.html?id=pitch-detector"
+  ]
+}

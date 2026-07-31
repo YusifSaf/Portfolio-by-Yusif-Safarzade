@@ -1,0 +1,25 @@
+{
+  "hero": "hero.gif",
+  "title": "I can see you",
+  "year": "Early 2026",
+  "role": "Programmer, Artist",
+  "tools": "HTML, CSS, JS, Three.js, Ml5.js",
+  "description": "This is a self-project that was displayed on DF Open Show. It uses Three.js for rendering and machine learning face tracking, to create an eerie effect of constantly being observed or watched. No matter where u go, the eyes will be watching you.",
+  "media": [
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/embed/VIDEO_ID",
+      "caption": "Video demo"
+    },
+    {
+      "type": "image",
+      "src": "image1.gif",
+      "caption": "Examples on a big screen"
+    }
+  ],
+  "links": [
+    "www.nothereyet.com",
+    "www.nothereyet.com",
+    "/HTML/Projects/project.html?id=physical-digital"
+  ]
+}

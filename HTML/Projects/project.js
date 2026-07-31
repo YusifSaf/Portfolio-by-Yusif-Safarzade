@@ -17,8 +17,20 @@ fetch("projects.json")
       return;
     }
 
-    // Set hero image
-    document.getElementById("hero").src = project.hero;
+    // Hero can be a still image or a muted looping video - which one just
+    // depends on the file extension in projects.json, no extra schema field.
+    const heroPlaceholder = document.getElementById("hero");
+    const isVideoHero = /\.(mp4|webm)$/i.test(project.hero);
+    const hero = document.createElement(isVideoHero ? "video" : "img");
+    hero.id = "hero";
+    hero.className = heroPlaceholder.className;
+    hero.src = project.hero;
+    if (isVideoHero) {
+      Object.assign(hero, { autoplay: true, muted: true, loop: true, playsInline: true });
+    } else {
+      hero.alt = project.title;
+    }
+    heroPlaceholder.replaceWith(hero);
 
     // Set title
     document.getElementById("title").textContent = project.title;
@@ -35,7 +47,20 @@ fetch("projects.json")
     imageGrid.innerHTML = ""; // Clear placeholder content
 
     project.media.forEach((mediaItem) => {
-      if (mediaItem.type === "image") {
+      if (mediaItem.type === "image" && /\.(mp4|webm)$/i.test(mediaItem.src)) {
+        // A gallery "image" entry that's actually a converted-from-gif local
+        // video - same muted looping treatment as the hero, no fullscreen
+        // click (a looping preview clip has no meaningful "fullscreen" state).
+        const video = document.createElement("video");
+        video.classList.add("grid-item");
+        Object.assign(video, { src: mediaItem.src, autoplay: true, muted: true, loop: true, playsInline: true });
+        imageGrid.appendChild(video);
+
+        const caption = document.createElement("figcaption");
+        caption.classList.add("caption");
+        caption.textContent = mediaItem.caption || "";
+        imageGrid.appendChild(caption);
+      } else if (mediaItem.type === "image") {
         // Create image element
         const img = document.createElement("img");
         img.classList.add("grid-item");
@@ -72,15 +97,24 @@ fetch("projects.json")
       }
     });
 
-    // Set links
+    // Set links - "www.nothereyet.com" is the placeholder for a link John
+    // hasn't filled in yet, so it hides that link item rather than rendering
+    // a dead link (accepts the "ww." typo present in a couple of meta.json
+    // files too). If that leaves only "Next Project", center it.
+    const PLACEHOLDER_LINK = /^w{2,3}\.nothereyet\.com$/i;
+    const linksSection = document.querySelector(".links-section");
     const links = document.querySelectorAll(".link-item");
+    let visibleCount = 0;
     links.forEach((link, i) => {
-      if (project.links[i]) {
-        link.href = project.links[i];
+      const href = project.links[i];
+      if (href && !PLACEHOLDER_LINK.test(href)) {
+        link.href = href;
+        visibleCount++;
       } else {
-        console.log("parameter count mismatch");
+        link.closest("h3").classList.add("is-hidden");
       }
     });
+    linksSection.classList.toggle("links-section--single", visibleCount === 1);
 
     // Initialize animations after content is loaded
     initializeAnimations();

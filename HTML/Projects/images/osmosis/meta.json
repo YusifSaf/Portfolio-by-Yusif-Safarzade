@@ -1,0 +1,50 @@
+{
+  "hero": "hero.mp4",
+  "title": "Osmosis",
+  "year": "late 2024",
+  "role": "Team Lead, Programmer",
+  "tools": "Unity 5",
+  "description": "I took the role of team lead for this demo game developed for one of my university courses along with 5 other students. It was a valuable experience, as I got to learn how to organize and assign tasks, communicate, find solutions to unexpected problems and ensuring smooth development process. This is Osmosis - a demo game set in a fictional dystopian world, corrupted by capitalism and corporation. Through series of action gameplay loops and puzzles, you, the main characted, will set the other characters of this world free.",
+  "media": [
+    {
+      "type": "image",
+      "src": "image (1).jpg",
+      "caption": ""
+    },
+    {
+      "type": "image",
+      "src": "image (2).jpg",
+      "caption": ""
+    },
+    {
+      "type": "image",
+      "src": "image (3).jpg",
+      "caption": ""
+    },
+    {
+      "type": "image",
+      "src": "image (4).jpg",
+      "caption": ""
+    },
+    {
+      "type": "image",
+      "src": "image (5).jpg",
+      "caption": "Screenshots of the in-game environments"
+    },
+    {
+      "type": "image",
+      "src": "image (6).png",
+      "caption": "Boss fight level"
+    },
+    {
+      "type": "video",
+      "src": "https://vimeo.com/1160886261?share=copy&fl=sv&fe=ci",
+      "caption": "Video of the gameplay"
+    }
+  ],
+  "links": [
+    "ww.nothereyet.com",
+    "www.nothereyet.com",
+    "/HTML/Projects/project.html?id=prema"
+  ]
+}

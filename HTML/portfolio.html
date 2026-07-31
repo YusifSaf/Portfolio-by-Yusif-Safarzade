@@ -21,83 +21,46 @@
       <h1 class="title-header">Portfolio</h1>
     </div>
 
-    <div class="content-wrapper">
-      <!-- Web-based Category -->
-      <section class="category-section">
-        <h2 class="category-header">Web-based</h2>
-        <div class="grid">
-          <a href="/HTML/Projects/project.html?id=portfolio-website" class="grid-item">
-            <img src="/HTML/Projects/images/portfolio-website/hero.gif" alt="Portfolio Website" />
-            <div class="overlay-text">Portfolio Website</div>
-          </a>
-          <a href="/HTML/Projects/project.html?id=field-handbook" class="grid-item">
-            <img src="/HTML/Projects/images/field-handbook/hero.gif" alt="Field Handbook" />
-            <div class="overlay-text">Field Handbook</div>
-          </a>
-          <a href="/HTML/Projects/project.html?id=audio-visualizer" class="grid-item">
-            <img src="/HTML/Projects/images/audio-visualizer/hero.gif" alt="Audio Visualizer" />
-            <div class="overlay-text">Audio Visualizer</div>
-          </a>
-          <a href="/HTML/Projects/project.html?id=midi-visualizer" class="grid-item">
-            <img src="/HTML/Projects/images/midi-visualizer/hero.gif" alt="MIDI Visualizer" />
-            <div class="overlay-text">MIDI Visualizer</div>
-          </a>
-          <a href="/HTML/Projects/project.html?id=pitch-detector" class="grid-item">
-            <img src="/HTML/Projects/images/pitch-detector/hero.gif" alt="Pitch Detector" />
-            <div class="overlay-text">Pitch Detector</div>
-          </a>
-        </div>
-      </section>
-
-      <!-- Game Development Category -->
-      <section class="category-section">
-        <h2 class="category-header">Game Development</h2>
-        <div class="grid">
-          <a href="/HTML/Projects/project.html?id=hyper-holes" class="grid-item">
-            <img src="/HTML/Projects/images/hyper-holes/hero.gif" alt="HyperHoles" />
-            <div class="overlay-text">HyperHoles</div>
-          </a>
-          <a href="/HTML/Projects/project.html?id=osmosis" class="grid-item">
-            <img src="/HTML/Projects/images/osmosis/hero.gif" alt="Osmosis" />
-            <div class="overlay-text">Osmosis</div>
-          </a>
-        </div>
-      </section>
-
-      <!-- Design/Art Category -->
-      <section class="category-section">
-        <h2 class="category-header">Design / Art / Installation</h2>
-        <div class="grid">
-          <a href="/HTML/Projects/project.html?id=prema" class="grid-item">
-            <img src="/HTML/Projects/images/prema/hero.gif" alt="Prema. Advertisement" />
-            <div class="overlay-text">Prema. Advertisement</div>
-          </a>
-          <a href="/HTML/Projects/project.html?id=rvk" class="grid-item">
-            <img src="/HTML/Projects/images/rvk/hero.gif" alt="RVK. Motion Design" />
-            <div class="overlay-text">RVK. Motion Design</div>
-          </a>
-          <a href="/HTML/Projects/project.html?id=i-can-see-you" class="grid-item">
-            <img
-              src="/HTML/Projects/images/i-can-see-you/hero.gif"
-              alt="I can see you. Installation"
-            />
-            <div class="overlay-text">I can see you. Installation</div>
-          </a>
-          <a href="/HTML/Projects/project.html?id=physical-digital" class="grid-item">
-            <img
-              src="/HTML/Projects/images/physical-digital/image2.jpg"
-              alt="Physical / Digital. Art"
-            />
-            <div class="overlay-text">Physical / Digital. Art</div>
-          </a>
-        </div>
-      </section>
-      <section class="category-section">
+    <div class="content-wrapper" id="content-wrapper">
+      <!-- Category sections are built from Projects/categories.json + projects.json below -->
+      <section class="category-section" id="contacts-section">
         <h2 class="category-contacts"><a href="/HTML/contacts.html">Contacts.</a></h2>
       </section>
     </div>
 
     <script type="module">
+      import { createGradientBackground } from "/JS/gradientBackground.js";
+      import { generateColorScheme } from "/JS/colorScheme.js";
+
+      // Same flowing gradient system as the Home page - random scheme per
+      // reload, ?seed=1234 pins a specific one. Portfolio has no scroll-driven
+      // dark/light phase (that's a Home-page-only cube mechanic), so it just
+      // uses one static color pair from the scheme instead of lerping between two.
+      function resolveColorSeed() {
+        const urlSeed = new URLSearchParams(window.location.search).get("seed");
+        if (urlSeed !== null && urlSeed !== "" && !Number.isNaN(Number(urlSeed))) {
+          return Number(urlSeed);
+        }
+        return Math.floor(Math.random() * 1_000_000_000);
+      }
+      const colorSeed = resolveColorSeed();
+      console.log(`Color scheme seed: ${colorSeed} (revisit with ?seed=${colorSeed} in the URL)`);
+      const colorScheme = generateColorScheme(colorSeed);
+
+      // Uses the light-phase pair specifically (soft, high-lightness) since this
+      // page's text/icons are a fixed dark color with no phase system to
+      // adapt them - the dark-phase pair is too saturated/dark for that to
+      // stay readable.
+      const gradientBg = createGradientBackground({ seed: colorSeed, speed: 1.8 });
+      gradientBg.setColors(colorScheme.light.bg[0], colorScheme.light.bg[1]);
+      document.body.prepend(gradientBg.canvas);
+
+      function renderGradient(timeMs) {
+        gradientBg.render(timeMs / 1000);
+        requestAnimationFrame(renderGradient);
+      }
+      requestAnimationFrame(renderGradient);
+
       gsap.registerPlugin(ScrollTrigger);
 
       // Initialize Lenis
@@ -112,41 +75,98 @@
       });
       gsap.ticker.lagSmoothing(0);
 
-      const titleHeader = document.querySelectorAll(".title");
-      const gridItems = document.querySelectorAll(".grid-item");
+      // Title and back-button animation doesn't depend on project data, so it
+      // can run immediately rather than waiting on the fetch below.
+      document.querySelectorAll(".title").forEach((item) => {
+        gsap.fromTo(item, { y: 100, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "expo.out" });
+      });
 
-      window.addEventListener("DOMContentLoaded", (e) => {
-        //Grid items animations
-        gsap.utils.toArray(gridItems).forEach((item) => {
+      function isVideoHero(src) {
+        return /\.(mp4|webm)$/i.test(src);
+      }
+
+      // Hero can be a still image or a muted looping video - which one just
+      // depends on the file extension in projects.json, no extra schema field.
+      function buildHeroMedia(hero, title) {
+        const src = `/HTML/Projects/${hero}`;
+        if (isVideoHero(hero)) {
+          const video = document.createElement("video");
+          Object.assign(video, { src, autoplay: true, muted: true, loop: true, playsInline: true });
+          return video;
+        }
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = title;
+        return img;
+      }
+
+      function buildCategorySection(categoryName, ids, projects) {
+        const section = document.createElement("section");
+        section.className = "category-section";
+
+        const heading = document.createElement("h2");
+        heading.className = "category-header";
+        heading.textContent = categoryName;
+        section.appendChild(heading);
+
+        const grid = document.createElement("div");
+        grid.className = "grid";
+        // An odd item count leaves one item alone in the final row - stretch
+        // it to fill both columns instead of leaving an empty gap next to it.
+        const isLastOfOddCount = (index) => ids.length % 2 !== 0 && index === ids.length - 1;
+
+        ids.forEach((id, index) => {
+          const project = projects[id];
+          if (!project) {
+            console.warn(`categories.json references unknown project id "${id}"`);
+            return;
+          }
+
+          const a = document.createElement("a");
+          a.href = `/HTML/Projects/project.html?id=${id}`;
+          a.className = isLastOfOddCount(index) ? "grid-item grid-item--wide" : "grid-item";
+          a.appendChild(buildHeroMedia(project.hero, project.title));
+
+          const overlay = document.createElement("div");
+          overlay.className = "overlay-text";
+          overlay.textContent = project.title;
+          a.appendChild(overlay);
+
+          grid.appendChild(a);
+        });
+
+        section.appendChild(grid);
+        return section;
+      }
+
+      async function renderGrid() {
+        const [categories, projects] = await Promise.all([
+          fetch("/HTML/Projects/categories.json").then((res) => res.json()),
+          fetch("/HTML/Projects/projects.json").then((res) => res.json()),
+        ]);
+
+        const contactsSection = document.getElementById("contacts-section");
+        for (const [categoryName, ids] of Object.entries(categories)) {
+          contactsSection.before(buildCategorySection(categoryName, ids, projects));
+        }
+
+        // Grid item animations only make sense once the real items exist.
+        gsap.utils.toArray(document.querySelectorAll(".grid-item")).forEach((item) => {
           gsap.from(item, {
             y: 50,
             opacity: 0,
-            // stagger:0.5,
             duration: 0.3,
             scrollTrigger: {
               trigger: item,
               start: "top 90%",
               toggleActions: "play none none reverse",
               ease: "expo.out",
-              // markers: true,
             },
           });
         });
+      }
 
-        //Title and the back button animations
-        titleHeader.forEach((item) => {
-          gsap.fromTo(
-            item,
-            { y: 100, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 1,
-              ease: "expo.out",
-            },
-          );
-        });
-      });
+      renderGrid();
     </script>
   </body>
 </html>

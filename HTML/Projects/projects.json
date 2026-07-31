@@ -1,6 +1,6 @@
 {
   "portfolio-website": {
-    "hero": "images/portfolio-website/hero.gif",
+    "hero": "images/portfolio-website/hero.mp4",
     "title": "Portfolio Website",
     "year": "Early 2026",
     "role": "Programmer, Web-designer",
@@ -9,7 +9,7 @@
     "media": [
       {
         "type": "image",
-        "src": "images/portfolio-website/image1.gif",
+        "src": "images/portfolio-website/image1.mp4",
         "caption": "Early prototype of the website made with p5.js"
       }
     ],
@@ -19,9 +19,8 @@
       "/HTML/Projects/project.html?id=field-handbook"
     ]
   },
-
   "field-handbook": {
-    "hero": "images/field-handbook/hero.gif",
+    "hero": "images/field-handbook/hero.mp4",
     "title": "Field Handbook",
     "year": "Late 2025",
     "role": "Programmer, Web-designer",
@@ -30,17 +29,17 @@
     "media": [
       {
         "type": "image",
-        "src": "images/field-handbook/image1.gif",
+        "src": "images/field-handbook/image1.mp4",
         "caption": "Cursor movement reactive landing page made using three.js' raycast system"
       },
       {
         "type": "image",
-        "src": "images/field-handbook/image2.gif",
+        "src": "images/field-handbook/image2.mp4",
         "caption": "Built-in model viewer for enhanced user interaction"
       },
       {
         "type": "image",
-        "src": "images/field-handbook/image3.gif",
+        "src": "images/field-handbook/image3.mp4",
         "caption": "GSAP animations for visual smoothness"
       }
     ],
@@ -50,9 +49,8 @@
       "/HTML/Projects/project.html?id=audio-visualizer"
     ]
   },
-
   "audio-visualizer": {
-    "hero": "images/audio-visualizer/hero.gif",
+    "hero": "images/audio-visualizer/hero.mp4",
     "title": "Audio Visualizer",
     "year": "Mid 2025",
     "role": "Programmer",
@@ -61,7 +59,7 @@
     "media": [
       {
         "type": "image",
-        "src": "images/audio-visualizer/hero.gif",
+        "src": "images/audio-visualizer/hero.mp4",
         "caption": "A small demo of the website. I recommend checking the website yourself."
       }
     ],
@@ -102,7 +100,7 @@
     ]
   },
   "pitch-detector": {
-    "hero": "images/pitch-detector/hero.gif",
+    "hero": "images/pitch-detector/hero.mp4",
     "title": "Pitch Detector",
     "year": "Late 2025",
     "role": "Programmer",
@@ -111,7 +109,7 @@
     "media": [
       {
         "type": "image",
-        "src": "images/pitch-detector/hero.gif",
+        "src": "images/pitch-detector/hero.mp4",
         "caption": "Feel free to test the website yourself"
       }
     ],
@@ -122,7 +120,7 @@
     ]
   },
   "hyper-holes": {
-    "hero": "images/hyper-holes/hero.gif",
+    "hero": "images/hyper-holes/hero.mp4",
     "title": "Hyper Holes",
     "year": "mid 2025",
     "role": "Programmer, UI/UX Designer, Motion Designer",
@@ -136,7 +134,7 @@
       },
       {
         "type": "image",
-        "src": "images/hyper-holes/hero.gif",
+        "src": "images/hyper-holes/hero.mp4",
         "caption": "UI Animations"
       },
       {
@@ -145,10 +143,14 @@
         "caption": "In-game store with cosmetics"
       }
     ],
-    "links": ["ww.nothereyet.com", "www.nothereyet.com", "/HTML/Projects/project.html?id=osmosis"]
+    "links": [
+      "ww.nothereyet.com",
+      "www.nothereyet.com",
+      "/HTML/Projects/project.html?id=osmosis"
+    ]
   },
   "osmosis": {
-    "hero": "images/osmosis/hero.gif",
+    "hero": "images/osmosis/hero.mp4",
     "title": "Osmosis",
     "year": "late 2024",
     "role": "Team Lead, Programmer",
@@ -191,10 +193,14 @@
         "caption": "Video of the gameplay"
       }
     ],
-    "links": ["ww.nothereyet.com", "www.nothereyet.com", "/HTML/Projects/project.html?id=prema"]
+    "links": [
+      "ww.nothereyet.com",
+      "www.nothereyet.com",
+      "/HTML/Projects/project.html?id=prema"
+    ]
   },
   "prema": {
-    "hero": "images/prema/hero.gif",
+    "hero": "images/prema/hero.mp4",
     "title": "Prema Advertisement",
     "year": "late 2024",
     "role": "Art Director, Photographer, Video Editor",
@@ -237,10 +243,14 @@
         "caption": "Photography posts for social media strategy"
       }
     ],
-    "links": ["www.nothereyet.com", "www.nothereyet.com", "/HTML/Projects/project.html?id=rvk"]
+    "links": [
+      "www.nothereyet.com",
+      "www.nothereyet.com",
+      "/HTML/Projects/project.html?id=rvk"
+    ]
   },
   "rvk": {
-    "hero": "images/rvk/hero.gif",
+    "hero": "images/rvk/hero.mp4",
     "title": "RVK",
     "year": "late 2023",
     "role": "Art Director, Photographer, Video Editor",
@@ -261,10 +271,10 @@
     "links": [
       "www.nothereyet.com",
       "www.nothereyet.com",
-      "/HTML/Projects/project.html?id=I-can-see-you"
+      "/HTML/Projects/project.html?id=i-can-see-you"
     ]
   },
-  "I-can-see-you": {
+  "i-can-see-you": {
     "hero": "images/i-can-see-you/hero.gif",
     "title": "I can see you",
     "year": "Early 2026",

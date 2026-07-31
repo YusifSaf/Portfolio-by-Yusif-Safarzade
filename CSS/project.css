@@ -36,8 +36,9 @@ body::-webkit-scrollbar {
 
 .title-header {
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
-  font-size: clamp(2.5rem, 6vw, 5rem);
-  text-transform: capitalize;
+  font-size: clamp(2.75rem, 6.5vw, 5.5rem);
+  text-transform: uppercase;
+  letter-spacing: 3px;
 }
 
 .back-button {
@@ -89,6 +90,17 @@ body::-webkit-scrollbar {
 
 .image-grid img.grid-item:hover {
   opacity: 0.9;
+}
+
+/* Self-hosted looping preview video (a converted gif in the gallery, not the
+   external iframe embed below) - same footprint as a gallery image, but no
+   zoom-in cursor since there's no fullscreen click handler for it. */
+.image-grid video.grid-item {
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: default;
 }
 
 /* Video embed styling */
@@ -153,6 +165,16 @@ body::-webkit-scrollbar {
   justify-content: space-between;
   align-items: center;
   padding-bottom: 3rem;
+}
+
+/* Demo/GitHub links are hidden when not set - if that leaves only "Next
+   Project", space-between would push it flush left, so center it instead. */
+.links-section.links-section--single {
+  justify-content: center;
+}
+
+.links-section h3.is-hidden {
+  display: none;
 }
 
 .link-item {

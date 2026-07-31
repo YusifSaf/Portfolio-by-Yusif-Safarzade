@@ -1,0 +1,25 @@
+{
+  "hero": "hero.mp4",
+  "title": "RVK",
+  "year": "late 2023",
+  "role": "Art Director, Photographer, Video Editor",
+  "tools": "Adobe Photoshop, Adobe Lightroom, Adobe Premier Pro",
+  "description": "RVK is a Spotify and Youtube hosted podcast known for its non-traditional take on trivial topics. The podcast's owner provided an original music piece and emphasized retaining its legacy as a core element of the brand's design. The key goal was to Develop a distinctive brand identity for RVK that creates a lasting association between its visual elements and audio experience, enhancing brand recognition. When the project began, the podcast was in its early stages and lacked cohesive branding. It required both a unique logotype and a memorable intro animation to play at the start of each episode. The design had to harmonize with the provided music and reflect its grunge-inspired aesthetic. The RVK logotype features stylized lettering where the letter V transforms into a microphone stand, subtly hinting at the podcast's core theme and purpose. This design choice reinforces the connection to audio and broadcasting while making the logo visually engaging and relevant. For the intro animation, a dynamic, fast-paced sequence was crafted to synchronize with the music. The animation incorporates rough grunge textures, displacement maps, cinematic lens flares, chromatic aberration, and refined color grading to heighten the immersive, grunge-inspired aesthetic. This approach delivers a cinematic and memorable opening that aligns perfectly with the podcast's tone and identity.",
+  "media": [
+    {
+      "type": "video",
+      "src": "https://vimeo.com/1161953818?share=copy&fl=sv&fe=ci",
+      "caption": "The final animation video"
+    },
+    {
+      "type": "image",
+      "src": "image1.jpg",
+      "caption": "Research behind the logotype"
+    }
+  ],
+  "links": [
+    "www.nothereyet.com",
+    "www.nothereyet.com",
+    "/HTML/Projects/project.html?id=i-can-see-you"
+  ]
+}

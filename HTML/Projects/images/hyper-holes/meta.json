@@ -1,0 +1,30 @@
+{
+  "hero": "hero.mp4",
+  "title": "Hyper Holes",
+  "year": "mid 2025",
+  "role": "Programmer, UI/UX Designer, Motion Designer",
+  "tools": "Unity 6, Adobe Illustrator, Adobe After Effects",
+  "description": "HyperHoles is a mobile arcade game for IOS and Android, which conveys experience of an real-world iconic bar arcade game from 80s. It features real engine physics driven gameplay, truly random level generation, and responsive controls and UI. I've been developing this project for around 1.5 years. During development process I learned a lot about programming, logic, engine physics and animation, along with developing solid in Unity",
+  "media": [
+    {
+      "type": "video",
+      "src": "https://vimeo.com/1160299589?share=copy&fl=sv&fe=ci",
+      "caption": "Video of the gameplay"
+    },
+    {
+      "type": "image",
+      "src": "hero.mp4",
+      "caption": "UI Animations"
+    },
+    {
+      "type": "video",
+      "src": "https://vimeo.com/1160299692?share=copy&fl=sv&fe=ci",
+      "caption": "In-game store with cosmetics"
+    }
+  ],
+  "links": [
+    "ww.nothereyet.com",
+    "www.nothereyet.com",
+    "/HTML/Projects/project.html?id=osmosis"
+  ]
+}

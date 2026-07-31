@@ -1,0 +1,20 @@
+{
+  "hero": "hero.mp4",
+  "title": "Portfolio Website",
+  "year": "Early 2026",
+  "role": "Programmer, Web-designer",
+  "tools": "HTML, CSS, JavaScript(Three, GSAP, Howler)",
+  "description": "An interactive website with modern animation, raycast system for user interactions, sound elements and convenient system of adding new projects using JSON.",
+  "media": [
+    {
+      "type": "image",
+      "src": "image1.mp4",
+      "caption": "Early prototype of the website made with p5.js"
+    }
+  ],
+  "links": [
+    "https://yusifsaf.github.io/Portfolio-by-Yusif-Safarzade/",
+    "https://github.com/YusifSaf/Portfolio-by-Yusif-Safarzade",
+    "/HTML/Projects/project.html?id=field-handbook"
+  ]
+}

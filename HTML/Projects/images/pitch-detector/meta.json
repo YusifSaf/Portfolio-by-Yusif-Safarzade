@@ -1,0 +1,20 @@
+{
+  "hero": "hero.mp4",
+  "title": "Pitch Detector",
+  "year": "Late 2025",
+  "role": "Programmer",
+  "tools": "p5.js",
+  "description": "This is another self project made when I was just starting to learn p5js. It uses FFT for volume analysis and machine learning based library - ml5 for pitch analysis and detection.",
+  "media": [
+    {
+      "type": "image",
+      "src": "hero.mp4",
+      "caption": "Feel free to test the website yourself"
+    }
+  ],
+  "links": [
+    "https://yusifsaf.github.io/Assignment%205/index.html",
+    "www.nothereyet.com",
+    "/HTML/Projects/project.html?id=hyper-holes"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "hero": "hero.mp4",
+  "title": "Audio Visualizer",
+  "year": "Mid 2025",
+  "role": "Programmer",
+  "tools": "p5.js",
+  "description": "This Song Visualizer was built as a self-project, using purely p5.js, and its built in FFT and PerlinNoise functionalities. Has got a full music player capabilities(stop, rewind, play, etc.). Also has a convinient navigation system using WASD. A song upload or link to Youtube / Spotify is going to be added in the future",
+  "media": [
+    {
+      "type": "image",
+      "src": "hero.mp4",
+      "caption": "A small demo of the website. I recommend checking the website yourself."
+    }
+  ],
+  "links": [
+    "https://yusifsaf.github.io/Assignment%206/index.html",
+    "https://github.com/YusifSaf/YusifSaf.github.io/tree/main/Assignment%206",
+    "/HTML/Projects/project.html?id=midi-visualizer"
+  ]
+}

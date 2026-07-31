@@ -1,0 +1,11 @@
+{
+  "Web-based": [
+    "portfolio-website",
+    "field-handbook",
+    "audio-visualizer",
+    "midi-visualizer",
+    "pitch-detector"
+  ],
+  "Game Development": ["hyper-holes", "osmosis"],
+  "Design / Art / Installation": ["prema", "rvk", "i-can-see-you", "physical-digital"]
+}

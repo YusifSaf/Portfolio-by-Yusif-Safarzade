@@ -1,0 +1,25 @@
+{
+  "hero": "image2.jpg",
+  "title": "Physical / Digital",
+  "year": "early 2024",
+  "role": "Artist, Designer",
+  "tools": "Graphite Pens, Adobe photoshop",
+  "description": "Here I tried to bring digital and physical worlds together and blend them in one piece. Initially, I drew a common still-life from observation with graphite pencils on paper in academic technique. Since it was too trivial, I turned into something more complex. By posterizing the original drawing and turning it all into just 4 values, and then assigning each of 4 collages to the values from dark to light the collage effect was made. Then by layering, displacing, coloring, ripping and blending various pieces of collages in different places the sense of volume was achieved. It is worth mentioning that collages used in the background, that I downloaded from internet, were also initially hand-crafted and then scanned.",
+  "media": [
+    {
+      "type": "image",
+      "src": "image1.jpg",
+      "caption": "Original drawing"
+    },
+    {
+      "type": "image",
+      "src": "image2.jpg",
+      "caption": "The final result"
+    }
+  ],
+  "links": [
+    "www.nothereyet.com",
+    "www.nothereyet.com",
+    "/HTML/Projects/project.html?id=portfolio-website"
+  ]
+}
