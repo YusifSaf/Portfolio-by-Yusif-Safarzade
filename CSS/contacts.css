@@ -26,8 +26,9 @@ body::-webkit-scrollbar {
 
 .title-header {
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
-  font-size: clamp(2.5rem, 6vw, 5rem);
-  text-transform: capitalize;
+  font-size: clamp(2.75rem, 6.5vw, 5.5rem);
+  text-transform: uppercase;
+  letter-spacing: 3px;
 }
 
 .back-button {
