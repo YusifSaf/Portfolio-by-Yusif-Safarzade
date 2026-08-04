@@ -33,8 +33,8 @@ body::-webkit-scrollbar {
 
 .back-button {
   position: absolute;
-  left: 20px;
-  top: 50%;
+  left: 25px;
+  top: calc(50% - 0.5rem);
   transform: translateY(-50%);
   transition: opacity 0.2s;
 }
@@ -44,8 +44,8 @@ body::-webkit-scrollbar {
 }
 
 .back-button img {
-  width: 40px;
-  height: 40px;
+  width: 46px;
+  height: 46px;
   display: block;
 }
 
@@ -105,8 +105,8 @@ body::-webkit-scrollbar {
   }
 
   .back-button img {
-    width: 30px;
-    height: 30px;
+    width: 34px;
+    height: 34px;
   }
 
   .contact-block {

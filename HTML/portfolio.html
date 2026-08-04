@@ -14,7 +14,7 @@
     <div class="title">
       <a href="javascript:history.back()" class="back-button">
         <img
-          src="https://api.iconify.design/mdi/arrow-left-circle.svg?color=%23333333"
+          src="/icons/BackButton.svg"
           alt="Back"
         />
       </a>
@@ -70,9 +70,6 @@
 
       // Connect Lenis to ScrollTrigger for smooth integration
       lenis.on("scroll", ScrollTrigger.update);
-      gsap.ticker.add((time) => {
-        lenis.raf(time * 1000);
-      });
       gsap.ticker.lagSmoothing(0);
 
       // Title and back-button animation doesn't depend on project data, so it
@@ -91,7 +88,7 @@
         const src = `/HTML/Projects/${hero}`;
         if (isVideoHero(hero)) {
           const video = document.createElement("video");
-          Object.assign(video, { src, autoplay: true, muted: true, loop: true, playsInline: true });
+          Object.assign(video, { src, muted: true, loop: true, playsInline: true });
           return video;
         }
         const img = document.createElement("img");
@@ -149,6 +146,37 @@
         for (const [categoryName, ids] of Object.entries(categories)) {
           contactsSection.before(buildCategorySection(categoryName, ids, projects));
         }
+
+        // Hero videos only decode/play while their grid item is actually on
+        // screen - without this, all of them loop forever in the background
+        // and the accumulated decode load causes the page to lag over time.
+        // Pausing is debounced (and rootMargin gives some breathing room)
+        // because scroll wobble can cross a video in/out of view several
+        // times in a row - pausing/resuming on every single crossing thrashes
+        // the video's decoder and ends up costing more than just leaving it.
+        const pauseTimers = new Map();
+        const videoObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              const video = entry.target;
+              if (entry.isIntersecting) {
+                clearTimeout(pauseTimers.get(video));
+                pauseTimers.delete(video);
+                video.play();
+              } else if (!pauseTimers.has(video)) {
+                pauseTimers.set(
+                  video,
+                  setTimeout(() => {
+                    video.pause();
+                    pauseTimers.delete(video);
+                  }, 400),
+                );
+              }
+            });
+          },
+          { rootMargin: "150px 0px" },
+        );
+        document.querySelectorAll(".grid video").forEach((video) => videoObserver.observe(video));
 
         // Grid item animations only make sense once the real items exist.
         gsap.utils.toArray(document.querySelectorAll(".grid-item")).forEach((item) => {
