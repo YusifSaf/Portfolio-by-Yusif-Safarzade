@@ -6,25 +6,14 @@
 
 body {
   font-family: Arial, sans-serif;
+  padding: 20px;
   background: #f5f5f5;
-  overflow-x: hidden;
+  min-height: 100vh;
 }
 
 body::-webkit-scrollbar {
   width: 0;
   height: 0;
-}
-
-.hero-image {
-  width: 100%;
-  height: 100vh;
-  margin-top: 1rem;
-  object-fit: cover;
-  display: block;
-}
-
-.content-wrapper {
-  padding: 20px;
 }
 
 .title {
@@ -37,8 +26,9 @@ body::-webkit-scrollbar {
 
 .title-header {
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
-  font-size: clamp(2.5rem, 6vw, 5rem);
-  text-transform: capitalize;
+  font-size: clamp(2.75rem, 6.5vw, 5.5rem);
+  text-transform: uppercase;
+  letter-spacing: 3px;
 }
 
 .back-button {
@@ -62,46 +52,20 @@ body::-webkit-scrollbar {
 .content {
   max-width: 1450px;
   margin: 0 auto;
-  padding: 0 120px 40px;
+  padding: 0 20px;
 }
 
-.text-block {
-  background: none;
+.resume-block {
+  background: #fff;
+  padding: 60px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   line-height: 1.8;
   font-size: 1.1rem;
   color: #333;
 }
 
-.text-block p {
-  margin-bottom: 1.5rem;
-}
-
-.text-block p:last-child {
-  margin-bottom: 0;
-}
-
-.site-footer {
-  text-align: center;
-  padding: 2rem 1rem 3rem;
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.site-footer a {
-  color: #666;
-  transition: opacity 0.2s;
-}
-
-.site-footer a:hover {
-  opacity: 0.6;
-}
-
 /* For mobile devices */
 @media (max-width: 768px) {
-  .hero-image {
-    height: 40vh;
-  }
-
   .title {
     padding: 2rem 1rem 3rem;
   }
@@ -115,11 +79,8 @@ body::-webkit-scrollbar {
     height: 34px;
   }
 
-  .content {
-    padding: 0 20px 40px;
-  }
-
-  .text-block {
+  .resume-block {
+    padding: 40px 30px;
     font-size: 1rem;
   }
 }

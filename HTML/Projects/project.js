@@ -34,7 +34,11 @@ fetch("projects.json")
 
     // Set title
     document.getElementById("title").textContent = project.title;
-    document.getElementById("page-title").textContent = project.title;
+    const pageTitle = `${project.title} — Yusif Safarzade`;
+    document.getElementById("page-title").textContent = pageTitle;
+    document.getElementById("og-title").content = pageTitle;
+    document.getElementById("page-description").content = project.description;
+    document.getElementById("og-description").content = project.description;
 
     // Set metadata
     document.querySelector("#year .value").textContent = project.year;
@@ -53,7 +57,13 @@ fetch("projects.json")
         // click (a looping preview clip has no meaningful "fullscreen" state).
         const video = document.createElement("video");
         video.classList.add("grid-item");
-        Object.assign(video, { src: mediaItem.src, autoplay: true, muted: true, loop: true, playsInline: true });
+        Object.assign(video, {
+          src: mediaItem.src,
+          autoplay: true,
+          muted: true,
+          loop: true,
+          playsInline: true,
+        });
         imageGrid.appendChild(video);
 
         const caption = document.createElement("figcaption");

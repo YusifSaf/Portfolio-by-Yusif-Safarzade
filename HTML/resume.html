@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resume — Yusif Safarzade</title>
+    <meta name="description" content="Resume and experience of Yusif Safarzade." />
+    <meta property="og:title" content="Resume — Yusif Safarzade" />
+    <meta property="og:description" content="Resume and experience of Yusif Safarzade." />
+    <meta name="twitter:card" content="summary" />
+    <link rel="stylesheet" href="../CSS/resume.css" />
+    <link rel="icon" type="image/svg+xml" href="../icons/favicon.svg" />
+
+    <script src="https://unpkg.com/lenis@1.3.17/dist/lenis.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
+  </head>
+  <body>
+    <div class="title">
+      <a href="javascript:history.back()" class="back-button">
+        <img src="../icons/BackButton.svg" alt="Back" />
+      </a>
+      <h1 class="title-header">Resume</h1>
+    </div>
+
+    <div class="content">
+      <div class="resume-block">
+        <!-- TODO: replace with real resume content (experience, education, skills, etc.) -->
+        <p>Resume content coming soon.</p>
+      </div>
+    </div>
+
+    <script type="module">
+      import { createGradientBackground } from "../JS/gradientBackground.js";
+      import { generateColorScheme } from "../JS/colorScheme.js";
+
+      // Same flowing gradient system as the Home page - random scheme per
+      // reload, ?seed=1234 pins a specific one. Resume has no scroll-driven
+      // dark/light phase (that's a Home-page-only cube mechanic), so it just
+      // uses one static color pair from the scheme instead of lerping between two.
+      function resolveColorSeed() {
+        const urlSeed = new URLSearchParams(window.location.search).get("seed");
+        if (urlSeed !== null && urlSeed !== "" && !Number.isNaN(Number(urlSeed))) {
+          return Number(urlSeed);
+        }
+        return Math.floor(Math.random() * 1_000_000_000);
+      }
+      const colorSeed = resolveColorSeed();
+      console.log(`Color scheme seed: ${colorSeed} (revisit with ?seed=${colorSeed} in the URL)`);
+      const colorScheme = generateColorScheme(colorSeed);
+
+      // Uses the light-phase pair specifically (soft, high-lightness) since this
+      // page's text/icons are a fixed dark color with no phase system to
+      // adapt them - the dark-phase pair is too saturated/dark for that to
+      // stay readable.
+      const gradientBg = createGradientBackground({ seed: colorSeed, speed: 1.8 });
+      gradientBg.setColors(colorScheme.light.bg[0], colorScheme.light.bg[1]);
+      document.body.prepend(gradientBg.canvas);
+
+      function renderGradient(timeMs) {
+        gradientBg.render(timeMs / 1000);
+        requestAnimationFrame(renderGradient);
+      }
+      requestAnimationFrame(renderGradient);
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Initialize Lenis
+      const lenis = new Lenis({
+        autoRaf: true,
+      });
+
+      // Connect Lenis to ScrollTrigger for smooth integration
+      lenis.on("scroll", ScrollTrigger.update);
+      gsap.ticker.lagSmoothing(0);
+
+      const titleHeader = document.querySelectorAll(".title");
+      const contentBlock = document.querySelectorAll(".resume-block");
+
+      window.addEventListener("DOMContentLoaded", (e) => {
+        //Title and the back button animations
+        titleHeader.forEach((item) => {
+          gsap.fromTo(
+            item,
+            { y: 100, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 1,
+              ease: "expo.out",
+            },
+          );
+        });
+
+        //Info box animation
+        contentBlock.forEach((item) => {
+          gsap.fromTo(
+            item,
+            { y: 100, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 1,
+              ease: "expo.out",
+            },
+          );
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -3,8 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About</title>
-    <link rel="stylesheet" href="/CSS/about.css" />
+    <title>About — Yusif Safarzade</title>
+    <meta
+      name="description"
+      content="About Yusif Safarzade — background, skills, and interests in design and development."
+    />
+    <meta property="og:title" content="About — Yusif Safarzade" />
+    <meta
+      property="og:description"
+      content="About Yusif Safarzade — background, skills, and interests in design and development."
+    />
+    <meta name="twitter:card" content="summary" />
+    <link rel="stylesheet" href="../CSS/about.css" />
+    <link rel="icon" type="image/svg+xml" href="../icons/favicon.svg" />
 
     <script src="https://unpkg.com/lenis@1.3.17/dist/lenis.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
@@ -12,14 +23,16 @@
   </head>
   <body>
     <img
-      src="/images/hong-kong-city-skyline-cityscape-city-lights-night-time-3840x2160-4555.jpg"
+      src="../images/hong-kong-city-skyline-cityscape-city-lights-night-time-3840x2160-4555.jpg"
       alt="Hero"
       class="hero-image"
     />
 
     <div class="content-wrapper">
       <div class="title">
-        <a href="javascript:history.back()" class="back-button">←</a>
+        <a href="javascript:history.back()" class="back-button">
+          <img src="../icons/BackButton.svg" alt="Back" />
+        </a>
         <h1 class="title-header">About</h1>
       </div>
 
@@ -45,9 +58,13 @@
         </div>
       </div>
     </div>
+
+    <footer class="site-footer">
+      <p>© 2026 Yusif Safarzade · <a href="contacts.html">Contact</a></p>
+    </footer>
     <script type="module">
-      import { createGradientBackground } from "/JS/gradientBackground.js";
-      import { generateColorScheme } from "/JS/colorScheme.js";
+      import { createGradientBackground } from "../JS/gradientBackground.js";
+      import { generateColorScheme } from "../JS/colorScheme.js";
 
       // Same flowing gradient system as the Home page - random scheme per
       // reload, ?seed=1234 pins a specific one. About has no scroll-driven

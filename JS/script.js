@@ -215,7 +215,7 @@ function applyColorPhase(t) {
     const cyclePos = deg / ROTATION_STEP_DEG;
     for (let face = 0; face < boxMaterials[cube].length; face++) {
       const pos = cyclePos + face;
-      const slotA = (((Math.floor(pos) % FACE_COUNT) + FACE_COUNT) % FACE_COUNT);
+      const slotA = ((Math.floor(pos) % FACE_COUNT) + FACE_COUNT) % FACE_COUNT;
       const slotB = (slotA + 1) % FACE_COUNT;
       const frac = pos - Math.floor(pos);
       faceLerpScratchA.lerpColors(boxDarkColors[cube][slotA], boxLightColors[cube][slotA], t);
@@ -229,7 +229,10 @@ function applyColorPhase(t) {
   if (gradientBg.willRedrawNextFrame()) {
     bgLerpScratch[0].lerpColors(bgDarkColors[0], bgLightColors[0], t);
     bgLerpScratch[1].lerpColors(bgDarkColors[1], bgLightColors[1], t);
-    gradientBg.setColors(`#${bgLerpScratch[0].getHexString()}`, `#${bgLerpScratch[1].getHexString()}`);
+    gradientBg.setColors(
+      `#${bgLerpScratch[0].getHexString()}`,
+      `#${bgLerpScratch[1].getHexString()}`,
+    );
     // document.body's own background sits behind the gradient canvas and is
     // normally fully hidden by it - it only matters as a fallback for what the
     // canvas's CSS blur reveals right at its own edge. Kept in the scheme's
@@ -570,7 +573,11 @@ function OnMouseMove(event) {
       if (titles[selectedObjectIndex] !== undefined) {
         titleText = titles[selectedObjectIndex];
         if (!titleAnimationFired) {
-          gsap.fromTo(".heading", { opacity: 0 }, { duration: 0.5, ease: "power4.out", opacity: 1 });
+          gsap.fromTo(
+            ".heading",
+            { opacity: 0 },
+            { duration: 0.5, ease: "power4.out", opacity: 1 },
+          );
         }
         titleAnimationFired = true;
 
@@ -670,7 +677,7 @@ function OnMouseDown(event) {
           break;
         case 2:
           clickAudio.play();
-          //Open link
+          navigateWithSpin(boxes[selectedObjectIndex], "HTML/resume.html");
           break;
         case 3:
           clickAudio.play();
