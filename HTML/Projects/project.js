@@ -13,7 +13,6 @@ fetch("projects.json")
 
     if (!project) {
       document.body.innerHTML = "<p>Project not found.</p>";
-      console.log("Project not found.");
       return;
     }
 

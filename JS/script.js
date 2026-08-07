@@ -597,8 +597,6 @@ function OnMouseMove(event) {
           y: THREE.MathUtils.degToRad(hoverBaseRotationDeg.y + tilt.y),
           z: THREE.MathUtils.degToRad(hoverBaseRotationDeg.z + tilt.z),
         });
-      } else {
-        console.log("No such object found :/");
       }
     }
 
@@ -688,7 +686,6 @@ function OnMouseDown(event) {
           navigateWithSpin(boxes[selectedObjectIndex], "HTML/contacts.html");
           break;
         default:
-          console.log("No such object found :/");
           break;
       }
     }
