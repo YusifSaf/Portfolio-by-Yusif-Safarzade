@@ -143,6 +143,14 @@ function closeFullscreen() {
   overlay.classList.remove("active");
 }
 
+// project.js is loaded as type="module", so top-level functions here are
+// module-scoped, not attached to window - inline onclick="..." attributes
+// in the HTML can't resolve them (this is also why the overlay's own
+// click-to-close never actually worked). Wire it up here instead: a click
+// on the backdrop, the image, or the Esc button all bubble up to the
+// overlay, so one delegated listener covers all three.
+document.getElementById("fullscreenOverlay").addEventListener("click", closeFullscreen);
+
 // Close on ESC key
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {

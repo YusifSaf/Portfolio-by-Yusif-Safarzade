@@ -94,8 +94,8 @@ function tint(hex, amount) {
 // Background gradient stops - both share one muted hue, only brightness
 // differs, so the flowing wash doesn't compete with the cubes' own hues.
 const BG_SATURATION = 0.4;
-const BG_DARK_SHADE = [0.88, 0.78];
-const BG_LIGHT_TINT = [0.85, 0.75];
+const BG_DARK_SHADE = [0.88, 0.65];
+const BG_LIGHT_TINT = [0.85, 0.65];
 
 // Cube colors: fixed, moderate saturation/lightness (never pushed to a rich-
 // dark shade or a washed-out pastel tint) - only hue changes between faces
@@ -139,7 +139,9 @@ export function generateColorScheme(seed = Date.now()) {
 
   function facesFor(baseLightness) {
     return faceToPalette.map((p, f) =>
-      cubeJitter[f].map((j) => hslToHex(cubeHues[p], CUBE_SATURATION, Math.max(0, Math.min(1, baseLightness + j)))),
+      cubeJitter[f].map((j) =>
+        hslToHex(cubeHues[p], CUBE_SATURATION, Math.max(0, Math.min(1, baseLightness + j))),
+      ),
     );
   }
 

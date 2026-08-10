@@ -138,6 +138,27 @@ body::-webkit-scrollbar {
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
 }
 
+/* Visible hint that Escape (or a click anywhere) closes the zoom view -
+   the overlay already closes on click/Escape, this is just an affordance. */
+.fullscreen-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  padding: 6px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.fullscreen-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 .section-heading {
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
   font-size: clamp(1.8rem, 4vw, 2.5rem);

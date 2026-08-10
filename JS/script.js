@@ -165,7 +165,7 @@ const colorScheme = generateColorScheme(colorSeed);
 // speed multiplies how fast the color stops drift (1 = original pace) - bump
 // up/down here to tune the flow rate. Same seed as the color scheme, so the
 // flow's drift pattern is reproducible together with the rest of the look.
-const gradientBg = createGradientBackground({ seed: colorSeed, speed: 1.8 });
+const gradientBg = createGradientBackground({ seed: colorSeed, speed: 5 });
 document.body.appendChild(gradientBg.canvas);
 
 // Setup Boxes

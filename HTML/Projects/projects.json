@@ -66,7 +66,7 @@
     "links": [
       "https://yusifsaf.github.io/Assignment%206/index.html",
       "https://github.com/YusifSaf/YusifSaf.github.io/tree/main/Assignment%206",
-      "/HTML/Projects/project.html?id=midi-visualizer"
+      "/HTML/Projects/project.html?id=pitch-detector"
     ]
   },
   "pitch-detector": {
@@ -113,11 +113,7 @@
         "caption": "In-game store with cosmetics"
       }
     ],
-    "links": [
-      "ww.nothereyet.com",
-      "www.nothereyet.com",
-      "/HTML/Projects/project.html?id=osmosis"
-    ]
+    "links": ["ww.nothereyet.com", "www.nothereyet.com", "/HTML/Projects/project.html?id=osmosis"]
   },
   "osmosis": {
     "hero": "images/osmosis/hero.mp4",
@@ -163,11 +159,7 @@
         "caption": "Video of the gameplay"
       }
     ],
-    "links": [
-      "ww.nothereyet.com",
-      "www.nothereyet.com",
-      "/HTML/Projects/project.html?id=prema"
-    ]
+    "links": ["ww.nothereyet.com", "www.nothereyet.com", "/HTML/Projects/project.html?id=prema"]
   },
   "prema": {
     "hero": "images/prema/hero.mp4",
@@ -213,11 +205,7 @@
         "caption": "Photography posts for social media strategy"
       }
     ],
-    "links": [
-      "www.nothereyet.com",
-      "www.nothereyet.com",
-      "/HTML/Projects/project.html?id=rvk"
-    ]
+    "links": ["www.nothereyet.com", "www.nothereyet.com", "/HTML/Projects/project.html?id=rvk"]
   },
   "rvk": {
     "hero": "images/rvk/hero.mp4",
@@ -241,7 +229,7 @@
     "links": [
       "www.nothereyet.com",
       "www.nothereyet.com",
-      "/HTML/Projects/project.html?id=i-can-see-you"
+      "/HTML/Projects/project.html?id=physical-digital"
     ]
   },
   "physical-digital": {
