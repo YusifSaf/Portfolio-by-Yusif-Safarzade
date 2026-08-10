@@ -1,3 +1,31 @@
+import { createGradientBackground } from "../../JS/gradientBackground.js";
+import { generateColorScheme } from "../../JS/colorScheme.js";
+
+// Same flowing gradient system as the Home page - random scheme per reload,
+// ?seed=1234 pins a specific one. Like About/Portfolio/Contacts/Resume, this
+// page has no scroll-driven dark/light phase, so it just uses one static
+// color pair from the scheme instead of lerping between two.
+function resolveColorSeed() {
+  const urlSeed = new URLSearchParams(window.location.search).get("seed");
+  if (urlSeed !== null && urlSeed !== "" && !Number.isNaN(Number(urlSeed))) {
+    return Number(urlSeed);
+  }
+  return Math.floor(Math.random() * 1_000_000_000);
+}
+const colorSeed = resolveColorSeed();
+console.log(`Color scheme seed: ${colorSeed} (revisit with ?seed=${colorSeed} in the URL)`);
+const colorScheme = generateColorScheme(colorSeed);
+
+const gradientBg = createGradientBackground({ seed: colorSeed, speed: 2.2 });
+gradientBg.setColors(colorScheme.light.bg[0], colorScheme.light.bg[1]);
+document.body.prepend(gradientBg.canvas);
+
+function renderGradient(timeMs) {
+  gradientBg.render(timeMs / 1000);
+  requestAnimationFrame(renderGradient);
+}
+requestAnimationFrame(renderGradient);
+
 //Loading the page
 const params = new URLSearchParams(window.location.search);
 const projectId = params.get("id");
