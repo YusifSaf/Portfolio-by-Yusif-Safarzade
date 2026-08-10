@@ -98,22 +98,34 @@ lenis.on("scroll", (e) => {
 });
 
 // Click-to-enter splash: gates audio behind one deliberate click (browsers
-// block autoplay-with-sound regardless) and holds scroll/animation until then
+// block autoplay-with-sound regardless) and holds scroll/animation until then.
+// Skipped entirely when arriving via ?skipIntro=1 (Portfolio's back button,
+// the only page whose back-nav is a fresh load instead of a bfcache restore -
+// see HTML/portfolio.html) - that link click is itself the user gesture, so
+// audio autoplay is still gesture-backed even though this document never
+// shows the splash.
 const splash = document.getElementById("splash");
 lenis.stop();
-splash.addEventListener(
-  "click",
-  () => {
-    BGAudio.play();
-    lenis.start();
-    gsap.to(splash, {
-      duration: 0.6,
-      opacity: 0,
-      onComplete: () => splash.remove(),
-    });
-  },
-  { once: true },
-);
+
+function enterSite() {
+  BGAudio.play();
+  lenis.start();
+  gsap.to(splash, {
+    duration: 0.6,
+    opacity: 0,
+    onComplete: () => splash.remove(),
+  });
+}
+
+const skipIntro = new URLSearchParams(window.location.search).get("skipIntro");
+if (skipIntro) {
+  // Strip the flag from the URL so a later manual reload of this page shows
+  // the splash normally instead of skipping it forever.
+  history.replaceState(null, "", window.location.pathname);
+  enterSite();
+} else {
+  splash.addEventListener("click", enterSite, { once: true });
+}
 
 const scene = new THREE.Scene();
 

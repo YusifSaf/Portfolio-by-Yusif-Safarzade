@@ -1,0 +1,42 @@
+/* Cross-document view-transition opt-in. Must be present in BOTH the
+   outgoing and incoming page's CSS for the transition to fire. */
+@view-transition {
+  navigation: auto;
+}
+
+/* Reset the browser's default cross-fade so old/new slide past each other
+   instead of fading - then apply our own named animations. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* --- Hand-tune duration/ease here (both rules must match) --- */
+::view-transition-old(root) {
+  animation: slide-out-left 0.6s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+::view-transition-new(root) {
+  animation: slide-in-right 0.6s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+/* --------------------------------------------------------------- */
+
+@keyframes slide-out-left {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}
